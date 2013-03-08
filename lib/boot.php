@@ -51,7 +51,6 @@ if (is_cli()) {
 	$session = new \Bacon\Session($config->session, $log);
 }
 
-
 $params = Ar($_REQUEST);
 $env = Ar($_ENV);
 $env->mergeF($_SERVER);
