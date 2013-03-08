@@ -22,6 +22,17 @@ it has to contain is:
 	"name": "yourappname",
 	"minimum-stability": "dev",
 
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/Brainsware/sauce"
+		},
+		{
+			"type": "vcs",
+			"url": "https://github.com/Brainsware/bacon"
+		}
+	],
+
 	"require": {
 		"php": ">= 5.4.0",
 		"brainsware/sauce": "dev-master",
@@ -76,6 +87,7 @@ class Base
 	];
 }
 ```
+
 
 Note #1: change permission for logs/application.log if Bacon can not write to
          it by default.
