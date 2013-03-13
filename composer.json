@@ -6,9 +6,9 @@
 	"homepage": "http://baconphp.net",
 
 	"support": {
-		"source": "https://github.com/Brainsware/bacon"
+		"source": "https://github.com/Brainsware/bacon",
+		"issues": "https://github.com/Brainsware/bacon/issues"
 	},
-
 	
 	"repositories": [
 		{ "type": "composer", "url": "local.satis" }
