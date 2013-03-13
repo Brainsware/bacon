@@ -1,0 +1,19 @@
+#!/bin/bash
+set -x
+
+APP_DIR=$(dirname $(readlink -f $0))/../../../../
+CONFIG_DIR=$APP_DIR/config
+HOST_STR=$HOST:$PORT
+
+if [ "$HOST_STR" == ":" ]
+then
+	if [ ! -e "$CONFIG_DIR/server.php" ]
+	then
+		HOST_STR=127.0.0.1:80
+	else
+		PHP="require(\"$CONFIG_DIR/server.php\"); print \"\${cli_server_host}\";"
+		HOST_STR=`php -r "$PHP"`
+	fi
+fi
+
+sudo php -S $HOST_STR -c config -t $APP_DIR/htdocs $APP_DIR/htdocs/index.php 2>&1

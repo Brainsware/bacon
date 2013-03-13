@@ -1,0 +1,18 @@
+#!/bin/bash
+
+APP_DIR=$(dirname $(readlink -f $0))/../
+COFFEE_DIR=$APP_DIR/coffee
+JS_DIR=$APP_DIR/htdocs/scripts
+
+compile() {
+  coffee -b -c -p coffee/$1.coffee > $JS_DIR/$(dirname $1)/$(basename $1).js
+}
+
+files() {
+	find coffee/ -name *.coffee | sed -e 's/^coffee\///g' | sed -e 's/.coffee$//g'
+}
+
+for i in $(files)
+do
+	$(compile $i) && echo "$i compiled successfully"
+done

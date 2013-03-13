@@ -1,0 +1,91 @@
+#!/bin/bash
+
+function usage
+{
+	echo "Usage: $0 [OPTION...]"
+	echo ""
+	echo "	-p <path to php binary>, defaults to \`which php\`"
+	echo "	-s <path to sqlite binary>, defaults to \`which sqlite\` or \`which sqlite3\`"
+	echo "	-V  use valgrind's callgrind in the tests"
+	echo "	-X  use Xdebug's profiler in the tests"
+	echo "	-n  Don't use Test::Harness"
+}
+
+phpbin=$( which php )
+sqlite=$( which sqlite ) || sqlite=$( which sqlite3 )
+prove=$( which prove ) 
+testdir=$( dirname $( readlink -f "${0}" ) )
+phpopt=
+
+while getopts "p:s:hnVX" option ; do
+	case "${option}" in
+		p)
+			phpbin="${OPTARG}"
+			[ -x "${phpbin}" ] || {
+				echo 'php not found.' 1>&2
+				exit 1
+			}
+			;;
+		s)
+			sqlite="${OPTARG}"
+			;;
+		n)
+			prove="Don't use Test::Harness"
+			;;
+		V)
+			valgrind=$( which valgrind ) || {
+				echo "cannot find valgrind binary" 1>&2
+				exit 1
+			}
+			[ -x "${phpbin}" ] || {
+				echo 'php not found.' 1>&2
+				exit 1
+			}
+			phpbin="valgrind --quiet --callgrind-out-file=${testdir}/output/callgrind.out.%p --tool=callgrind --dump-instr=yes ${phpbin}"
+			# Running with Xdebug doesn't make sense, you'll be profiling a profiler:
+			phpopt="-dxdebug.default_enable=off"
+			;;
+		X)
+			phpopt="-d xdebug.profiler_enable=1 -d xdebug.profiler_aggregate=On -d xdebug.profiler_output_dir=${testdir}/output ${phpopt}"
+			;;
+		h|\?)
+			usage
+			exit
+			;;
+	esac
+	shift
+done
+
+if [ ! -x "${sqlite}" ]; then
+	echo 'sqlite not found.' 1>&2
+	exit 1
+fi
+
+
+
+( cd "${testdir}/data"
+
+for file in *.sql ; do
+	db="${file%.*}.db"
+	rm -f "${db}"
+	${sqlite} "${db}" < "${file}" || {
+		echo "Failed to create ${db} from ${file}" 1>&2
+		exit 1
+    }
+done )
+
+cd "${testdir}"
+
+if [ $# = 0 ] ; then
+	tests=( *.t.php )
+else
+	tests=( $@ )
+fi
+
+if [ -x "${prove}" ] ; then
+	"${prove}" -e "${phpbin} ${phpopt} -f testall.php" "${tests[@]}"
+else
+	for testcase in "${tests[@]}" ; do
+		${phpbin[@]} ${phpopt} -f testall.php "${testcase}"
+	done
+fi
