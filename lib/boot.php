@@ -54,7 +54,7 @@ if (is_cli()) {
 
 $params = Ar($_REQUEST);
 $env = Ar($_ENV);
-$env->merge($_SERVER);
+$env->mergeF($_SERVER);
 
 # PHP's builtin webserver doesn't know FallbackResource. So we have to do it on our
 # own in this case.
