@@ -31,6 +31,12 @@ class Log
 	
 	public function __construct ($level = self::INFO, $driver = self::FILESYSTEM, $output_file = null)
 	{
+		if (is_an_array($level)) {
+			$options = $level;
+			$level = $options->level;
+			$driver = $options->driver;
+		}
+
 		$this->driver = $driver;
 		$this->level  = $level;
 
@@ -54,7 +60,7 @@ class Log
 
 	public function __call ($level, $message)
 	{
-		if (!in_array($level, $this->levels)) {
+		if (!in_array(strtoupper($level), $this->levels)) {
 			return false;
 		} else {
 			$level = $this->levels[strtoupper($level)];
