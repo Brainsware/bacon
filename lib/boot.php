@@ -63,6 +63,10 @@ $env->merge($_SERVER);
 if (is_cli_server()) {
 	$path = $params->request_uri;
 
+	if (empty($path) || $path === null) {
+		$path = $env->request_uri;
+	}
+
 	# Remove any GET parameters (<uri>?foo=bar) if present
 	$question_mark = strpos($path, '?');
 
