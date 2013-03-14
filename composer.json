@@ -1,28 +1,28 @@
 {
-    "name":              "brainsware/bacon",
+	"name":              "brainsware/bacon",
 	"description":       "Fast and scalable PHP MVC framework",
 	"minimum-stability": "dev",
 	"license":           "Apache-2.0",
 	"homepage":          "http://baconphp.net",
 
-    "authors": [
+	"authors": [
 		{ "name": "Alexander Pánek", "email": "a.panek@brainsware.org"  },
 		{ "name": "Daniel Khalil",   "email": "d.khalil@brainsware.org" },
 		{ "name": "Igor Galić",      "email": "i.galic@brainsware.org"  }
-    ],
+	],
 
 	"support": {
 		"source": "https://github.com/Brainsware/bacon",
 		"issues": "https://github.com/Brainsware/bacon/issues"
 	},
 
-    "require": {
+	"require": {
 		"php":                                    ">= 5.4.0",
 		"brainsware/sauce":                       "0.1.0",
-        "twig/twig":                              "dev-master",
-        "brainsware/php-markdown-extra-extended": "dev-master",
-        "minmb/phpmailer":                        "dev-master"
-    },
+		"twig/twig":                              "dev-master",
+		"brainsware/php-markdown-extra-extended": "dev-master",
+		"minmb/phpmailer":                        "dev-master"
+	},
 
 	"autoload": { "psr-0": { "Bacon": "lib/" } },
 
