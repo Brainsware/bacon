@@ -37,7 +37,7 @@ class Router
 			$current = $splitted_uri[$i];
 			$next    = $i + 1 < $count ? $splitted_uri[$i + 1] : '';
 
-			$path = \Sauce\Path::join(APP_ROOT, 'controllers', $this->route, $current);
+			$path = \Sauce\Path::join(APP_ROOT, 'Controllers', $this->route, $current);
 
 			if (is_dir($path) && is_file(\Sauce\Path::join($path, $next . '.php'))) {
 				// Current part is a namespace
