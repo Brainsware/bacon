@@ -8,7 +8,7 @@ abstract class Model extends \Sauce\Object
 	protected static $table_name;
 	protected static $primary_key = 'id';
 	
-	protected static $timestamps;
+	protected static $timestamps = true;
 	protected static $created_at = 'created_at';
 	protected static $updated_at = 'updated_at';
 
