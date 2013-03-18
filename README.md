@@ -5,92 +5,61 @@ The bacon PHP framework is a lean, clean, simple and fast MVC framework without 
 
 Server Requirements:
 * A webserver
-* PHP 5.4.0 or greater
+* PHP 5.4.0 or greater ([php.net](http://php.net/))
+* Composer ([getcomposer.org](http://getcomposer.org/))
 
-Installation:
-=============
+# Installation:
 
-Bacon PHP depends on PHP Composer (https://getcomposer.org/), it will take care
-of all the dependencies. If you don't use it yet, it's about time you check it
-out.
-
-First off, you'll need to create a composer.json for your project. The minimum
-it has to contain is:
+Once you have PHP and composer set up, you can create a skeleton project with the following:
 
 ```
-{
-	"name": "yourappname",
-	"minimum-stability": "dev",
-
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/Brainsware/sauce"
-		},
-		{
-			"type": "vcs",
-			"url": "https://github.com/Brainsware/bacon"
-		}
-	],
-
-	"require": {
-		"php": ">= 5.4.0",
-		"brainsware/sauce": "dev-master",
-		"brainsware/bacon": "dev-master"
-	},
-
-	"autoload": {
-		"psr-0": {
-			"Models": ".",
-			"Controllers": ".",
-			"Config": "."
-		}
-	}
-}
+% composer create-project brainsware/bacon-dist project-name
 ```
 
-Once you have that set up, you can call `composer install` and have all the
-dependencies installed.
-
-Then it is time to create the necessary directories:
+This will download all the necessary software, and create all important directories and sample configuration files for your new project:
 
 ```
-mkdir -p Config Controllers Models Views logs session htdocs
-touch logs/application.log
-touch Config/Base.php
+Installing brainsware/bacon-dist (0.1.0)
+  - Installing brainsware/bacon-dist (0.1.0)
+    Loading from cache
+
+Created project in project-name
+Loading composer repositories with package information
+Installing dependencies
+  - Installing brainsware/php-markdown-extra-extended (dev-master 0.1.0)
+    Cloning 0.1.0
+
+  - Installing brainsware/sauce (0.1.0)
+    Loading from cache
+
+  - Installing minmb/phpmailer (dev-master df44323)
+    Cloning df443234ad0ca10cbf91a0c0a728b256afcab1d1
+
+  - Installing twig/twig (dev-master ba67e2c)
+    Cloning ba67e2cf8e2ca6cada1de5a316a724df648c52ac
+
+  - Installing brainsware/bacon (0.1.0)
+    Loading from cache
+
+Writing lock file
+Generating autoload files
 ```
 
-In Config/Base.php insert the following and modify as needed:
+# Configuration:
+
+Bacon uses PHP files for storing all of its configurations.
+
+The skeleton project we provide comes with an Intro controller, which is set as the default fallback controller in `Config/Base.php`
+
+The second config file you will want to look at is `Config/Database.php`
+Here are the basic options you will want to set for your database:
 
 ```
-namespace Config;
-
-class Base
-{
-	public static $app = [
-		'timezone'        => 'UTC',
-		'base_uri'        => '',
-		'fallback'        => 'intro'
-	];
-
-	public static $session = [
-		'timeout'           => 86400,
-		'regeneration_time' => 3600,
-		'key'               => 'bacon!',
-		'session_handler'   => 'files'
-	];
-
-	public static $logging = [
-		'level'  => 'info',
-		'debug'  => 'screen',
-		'driver' => 'syslog'
-	];
-}
+'server'   => 'db.dbznet',  # Enter your server host here
+'name'     => 'blogDB',     # The name of your database
+'type'     => 'mysql',      # Anything your PDO Installation supports. (http://www.php.net/manual/en/pdo.drivers.php)
+'username' => 'blogDBuser', # The username you want to connect to your database with
+'password' => 'VryScrPswd', # The password.
 ```
 
-
-Note #1: change permission for logs/application.log if Bacon can not write to
-         it by default.
-
-Note #2: the session directory is optional. Just make sure to let PHP know
-         where to put the session files. (php.ini -> `session.save_path`)
+Bacon does not provide default values for these options. If your application needs a database, you will have to create it and connect Bacon to it via `Config/Database.php`.
