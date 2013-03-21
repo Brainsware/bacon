@@ -73,7 +73,7 @@ abstract class Model extends \Sauce\Object
 
 	/* Fetch the item with given id from the database. */
 	public static function find($id)
-	{ return Collection::_where(get_called_class(), array(static::$primary_key => $id))->first(); }
+	{ return Collection::_where(get_called_class(), [static::$primary_key => $id])->first(); }
 
 	/* The following methods are proxies for the corresponding Collection methods. */
 

@@ -31,7 +31,7 @@ class Messages
 	protected $session;
 	protected $levels;
 
-	public function __construct($session = null, $ttl = 1, $levels = array())
+	public function __construct($session = null, $ttl = 1, $levels = [])
 	{
 		$this->session = $session;
 
@@ -42,7 +42,7 @@ class Messages
 		}
 
 		if (empty($levels)) {
-			$this->levels = array('error', 'warning', 'notice', 'debug');
+			$this->levels = ['error', 'warning', 'notice', 'debug'];
 		}
 
 		// Check whether messages store is available already -
@@ -73,7 +73,7 @@ class Messages
 
 		foreach ($this->levels as $level) {
 			if (!isset($this->session->messages->$level)) {
-				$this->session->messages->$level = array();
+				$this->session->messages->$level = [];
 			}
 		}
 	}

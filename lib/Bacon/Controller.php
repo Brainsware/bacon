@@ -217,9 +217,9 @@ abstract class Controller
         }
     }
 
-    private function array_keys_to_lower(array $array = array())
+    private function array_keys_to_lower(array $array = [])
     {
-        $new_array = array();
+        $new_array = [];
 
         foreach ($array as $key => $value) {
             $new_array[strtolower($key)] = $value;

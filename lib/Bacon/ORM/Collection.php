@@ -109,7 +109,7 @@ class Collection extends \ArrayObject
 	public function last()
 	{
 		if (empty($this->order_scope)) {
-			$this->order(array('by' => $this->primary_key, 'direction' => 'DESC'));
+			$this->order(['by' => $this->primary_key, 'direction' => 'DESC']);
 		} else {
 			$direction = strtolower($this->order_scope['direction']);
 
@@ -153,7 +153,7 @@ class Collection extends \ArrayObject
 	public function select($args)
 	{
         if (!is_array($args)) {
-            $args = array($args);
+            $args = [$args];
         }
 
 		$this->select_list = $args;
@@ -168,7 +168,7 @@ class Collection extends \ArrayObject
 		}
 
         if (is_string($args)) {
-            $args = array($args);
+            $args = [$args];
         }
 
 		$this->where_scope = array_merge($this->where_scope, $args);
@@ -287,7 +287,7 @@ class Collection extends \ArrayObject
         }
 
 		if (!empty($this->order_scope)) {
-			$order_scope = array_merge(array('by' => 'id', 'direction' => 'ASC'), $this->order_scope);
+			$order_scope = array_merge(['by' => 'id', 'direction' => 'ASC'], $this->order_scope);
 
 			$statement .= ' ORDER BY ' . $order_scope['by'] . ' ' . $order_scope['direction'];
 		}

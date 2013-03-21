@@ -45,7 +45,7 @@ class Html extends \Bacon\Presenter
 
 		if (!empty($this->context->filters)) {
 			foreach ($this->context->filters->getArrayCopy() as $name => $function) {
-				$filter_function = new \Twig_Filter_Function($function, array('is_safe' => array('html')));
+				$filter_function = new \Twig_Filter_Function($function, ['is_safe' => ['html']]);
 				$twig->addFilter($name, $filter_function);
 			}
 		}

@@ -136,7 +136,7 @@ abstract class Model extends \Sauce\Object
 
 	public static function find($id)
 	{
-		return Collection::_where(get_called_class(), array(static::$primary_key => $id))->first();
+		return Collection::_where(get_called_class(), [static::$primary_key => $id])->first();
 	}
 
 	public static function all()
@@ -195,7 +195,7 @@ abstract class Model extends \Sauce\Object
 
 	protected function error ($key, $message)
 	{
-		$this->errors->push(new ValidationError(array('key' => $key, 'message' => $message)));
+		$this->errors->push(new ValidationError(['key' => $key, 'message' => $message]));
 	}
 
 	protected function validate ()

@@ -130,7 +130,7 @@ class Util
      */
     // DISPLAYS COMMENT POST TIME AS "1 year, 1 week ago" or "5 minutes, 7 seconds ago", etc...
     public static function time_ago($date, $granularity = 1) {
-        $periods = array(
+        $periods = [
             'decade' => 315360000,
             'year'   => 31536000,
             'month'  => 2628000,
@@ -139,7 +139,7 @@ class Util
             'hour'   => 3600,
             'minute' => 60,
             'second' => 1
-        );
+        ];
 
         $date = strtotime($date);
         $difference = time() - $date;

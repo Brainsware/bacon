@@ -36,12 +36,12 @@ class Log
 	const WARNING = 1;
 	const ERROR   = 0;
 
-	private $levels = array(
+	private $levels = [
 		'DEBUG'   => 3,
 		'INFO'    => 2,
 		'WARNING' => 1,
 		'ERROR'   => 0
-	);
+	];
 
 	protected $file;
 	protected $driver;

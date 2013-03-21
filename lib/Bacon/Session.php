@@ -121,7 +121,7 @@ class Session implements \ArrayAccess
 
 	public function destroy ()
 	{
-		$_SESSION = array();
+		$_SESSION = [];
 
 		session_regenerate_id(true);
 

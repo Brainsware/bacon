@@ -98,8 +98,8 @@ class Request extends Immutable
 
 		$count = count($splitted_uri);
 
-		$this->route = array();
-		$this->_params = array();
+		$this->route = [];
+		$this->_params = [];
 		$this->action = '';
 		$this->request_type = 'html';
 
@@ -260,7 +260,7 @@ class Request extends Immutable
 				$to = '/' . $to;
 			}
 
-			$to = join('', array($this->base_uri, $to));
+			$to = join('', [$this->base_uri, $to]);
 		}
 
 		header('Location: ' . $to);
