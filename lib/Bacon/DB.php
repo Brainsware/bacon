@@ -61,6 +61,10 @@ class DB extends \PDO
 	 */
 	public static function __getInstance ($name = 'default', array $config = NULL)
 	{
+		if (!class_exists('\Config\Database')) {
+			throw new \Exception('You are trying to use the database, but there was no database configuration found in Config/Database.php! Aborting.');
+		}
+
 		if (!is_string($name)) {
 			static::$static_log->error('Wrong db instance parameter: ' . $name);
 

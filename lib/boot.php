@@ -18,7 +18,7 @@ error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 'stdout');
 
 if (!class_exists('\Config\Base')) {
-	// TODO: Output something like "copy the Base.sample.php to Base.php"
+	throw new \Exception('There was no base configuration found in Config/Base.php! Aborting.');
 }
 
 $config = Ar([
