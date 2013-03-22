@@ -29,4 +29,4 @@ then
 	fi
 fi
 
-sudo php -S $HOST_STR -c config -t $APP_DIR/htdocs $APP_DIR/htdocs/index.php 2>&1
+php -S $HOST_STR -c config -t $APP_DIR/htdocs $APP_DIR/htdocs/index.php 2>&1
