@@ -22,7 +22,7 @@ if [ "$HOST_STR" == ":" ]
 then
 	if [ ! -e "$CONFIG_DIR/server.php" ]
 	then
-		HOST_STR=127.0.0.1:80
+		HOST_STR=127.0.0.1:8080
 	else
 		PHP="require(\"$CONFIG_DIR/server.php\"); print \"\${cli_server_host}\";"
 		HOST_STR=`php -r "$PHP"`
