@@ -65,11 +65,11 @@ class Collection extends \ArrayObject
 			$this->load();
 		}
 
-        if (parent::offsetExists($offset)) {
-            return parent::offsetGet($offset);
-        }
+		if (parent::offsetExists($offset)) {
+			return parent::offsetGet($offset);
+		}
 
-        return false;
+		return false;
 	}
 
 	public function getIterator()
@@ -130,19 +130,21 @@ class Collection extends \ArrayObject
 
 	public function count()
 	{
-        if (!$this->loaded) {
-            try {
-                $statement = 'SELECT COUNT(*) AS count FROM ' . $this->table_name . $this->where_conditions();
+		if (!$this->loaded) {
+			try {
+				$wc = $this->where_conditions();
+				$values = $wc['values'];
+				$statement = 'SELECT COUNT(*) AS count FROM ' . $this->table_name . $wc['statement'];
 
-                $result = $this->db->query($statement);
+				$result = $this->db->query($statement, $values);
 
-                return $result[0]['count'];
-            } catch (\PDOException $e) {
-                return 0;
-            }
-        } else {
-            return parent::count();
-        }
+				return $result[0]['count'];
+			} catch (\PDOException $e) {
+				return 0;
+			}
+		} else {
+			return parent::count();
+		}
 	}
 
 	public function is_empty ()
@@ -152,9 +154,9 @@ class Collection extends \ArrayObject
 
 	public function select($args)
 	{
-        if (!is_array($args)) {
-            $args = [$args];
-        }
+		if (!is_array($args)) {
+			$args = [$args];
+		}
 
 		$this->select_list = $args;
 
@@ -167,9 +169,9 @@ class Collection extends \ArrayObject
 			$this->where_scope = [];
 		}
 
-        if (is_string($args)) {
-            $args = [$args];
-        }
+		if (is_string($args)) {
+			$args = [$args];
+		}
 
 		$this->where_scope = array_merge($this->where_scope, $args);
 
@@ -258,20 +260,19 @@ class Collection extends \ArrayObject
 	{
 		if ($this->loaded) return;
 
+		$values = [];
 		$statement = 'SELECT ';
 
 		if (count($this->select_list) > 0) {
-            if (is_array($this->primary_key)) {
-                foreach ($this->primary_key as $key) {
-                    if (!in_array($key, $this->select_list)) {
-                        $this->select_list[] = $key;
-                    }
-                }
-            } else {
-                if (!in_array($this->primary_key, $this->select_list)) {
-                    $this->select_list[] = $this->primary_key;
-                }
-            }
+			if (is_array($this->primary_key)) {
+				foreach ($this->primary_key as $key) {
+					if (!in_array($key, $this->select_list)) {
+						$this->select_list[] = $key;
+					}
+				}
+			} elseif (!in_array($this->primary_key, $this->select_list)) {
+				$this->select_list[] = $this->primary_key;
+			}
 
 			$statement .= implode(', ', $this->select_list);
 		} else {
@@ -280,11 +281,13 @@ class Collection extends \ArrayObject
 
 		$statement .= ' FROM ' . $this->table_name;
 
-        $statement .= $this->where_conditions();
+		$wc = $this->where_conditions();
+		$statement .= $wc['statement'];
+		$values = array_merge($values, $wc['values']);
 
-        if (!empty($this->group_scope)) {
-        	$statement .= ' GROUP BY ' . $this->group_scope;
-        }
+		if (!empty($this->group_scope)) {
+			$statement .= ' GROUP BY ' . $this->group_scope;
+		}
 
 		if (!empty($this->order_scope)) {
 			$order_scope = array_merge(['by' => 'id', 'direction' => 'ASC'], $this->order_scope);
@@ -301,7 +304,7 @@ class Collection extends \ArrayObject
 		}
 
 		try {
-			$items = $this->db->query($statement);
+			$items = $this->db->query($statement, $values);
 
 		} catch (\PDOException $e) {
 			$this->loaded = true;
@@ -322,9 +325,10 @@ class Collection extends \ArrayObject
 		$this->loaded = true;
 	}
 
-    private function where_conditions ()
-    {
-        $statement = ' ';
+	private function where_conditions ()
+	{
+		$statement = ' ';
+		$values = [];
 
 		if (!empty($this->where_scope)) {
 			$conditions = [];
@@ -348,8 +352,8 @@ class Collection extends \ArrayObject
 					if ($condition === null) {
 						$c = $this->table_name . '.' . $column_name . ' IS NULL';
 					} else {
-						$c = $this->table_name . '.' . $column_name . ' = ';
-						$c .= $this->db->quote($condition);
+						$c = $this->table_name . '.' . $column_name . ' = ?';
+						$values[] = $condition;
 					}
 
 					array_push($conditions, $c);
@@ -359,8 +363,8 @@ class Collection extends \ArrayObject
 			$statement .= implode(' AND ', $conditions);
 		}
 
-        return $statement;
-    }
+		return ['statement' => $statement, 'values' => $values];
+	}
 }
 
 ?>
