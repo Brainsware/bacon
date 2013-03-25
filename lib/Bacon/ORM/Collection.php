@@ -133,12 +133,13 @@ class Collection extends \ArrayObject
 		if (!$this->loaded) {
 			try {
 				$wc = $this->where_conditions();
-				$values = $wc['values'];
-				$statement = 'SELECT COUNT(*) AS count FROM ' . $this->table_name . $wc['statement'];
+				$values = $wc->values;
+				$statement = 'SELECT COUNT(*) AS count FROM ' . $this->table_name . $wc->statement;
 
 				$result = $this->db->query($statement, $values);
 
 				return $result[0]['count'];
+
 			} catch (\PDOException $e) {
 				return 0;
 			}
@@ -328,42 +329,49 @@ class Collection extends \ArrayObject
 	private function where_conditions ()
 	{
 		$statement = ' ';
-		$values = [];
+		$values = V();
 
 		if (!empty($this->where_scope)) {
-			$conditions = [];
+			$conditions = V();
 
 			$statement .= 'WHERE ';
 
 			foreach ($this->where_scope as $column_name => $condition) {
-				// array('id' => array(1, 2, 3)) => 'id IN (1, 2, 3)'
-				if (is_array($condition)) {
-					$in_params = [];
+				if (is_an_array($condition)) {
+					// array('id' => array(1, 2, 3)) => 'id IN (1, 2, 3)'
 
-					foreach ($condition as $c) {
-						array_push($in_params, $this->db->quote($c));
+					$in_params = V();
+
+					$condition = V($condition);
+
+					foreach ($condition->to_array() as $c) {
+						$in_params->push($this->db->quote($c));
 					}
 
-					array_push($conditions, $this->table_name . '.' . $column_name . ' IN(' . implode(', ', $in_params) . ')');
+					$conditions->push($this->table_name . '.' . $column_name . ' IN (' . $in_params->join(', ') . ')');
+
 				} elseif (!$column_name) {
 					// String condition, for clauses that cover more complex conditions than simple ANDs.
-					array_push($conditions, "(" . $condition . ")");
+					$conditions->push("(" . $condition . ")")
+
 				} else {
 					if ($condition === null) {
 						$c = $this->table_name . '.' . $column_name . ' IS NULL';
+
 					} else {
 						$c = $this->table_name . '.' . $column_name . ' = ?';
-						$values[] = $condition;
+
+						$values->push($condition);
 					}
 
-					array_push($conditions, $c);
+					$conditions->push($c);
 				}
 			}
 
-			$statement .= implode(' AND ', $conditions);
+			$statement .= $conditions->join(' AND ');
 		}
 
-		return ['statement' => $statement, 'values' => $values];
+		return A([ 'statement' => $statement, 'values' => $values ]);
 	}
 }
 
