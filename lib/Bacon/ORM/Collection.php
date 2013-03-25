@@ -155,8 +155,8 @@ class Collection extends \ArrayObject
 
 	public function select($args)
 	{
-		if (!is_array($args)) {
-			$args = [$args];
+		if (!is_an_array($args)) {
+			$args = [ $args ];
 		}
 
 		$this->select_list = $args;
@@ -171,7 +171,7 @@ class Collection extends \ArrayObject
 		}
 
 		if (is_string($args)) {
-			$args = [$args];
+			$args = [ $args ];
 		}
 
 		$this->where_scope = array_merge($this->where_scope, $args);
@@ -283,15 +283,15 @@ class Collection extends \ArrayObject
 		$statement .= ' FROM ' . $this->table_name;
 
 		$wc = $this->where_conditions();
-		$statement .= $wc['statement'];
-		$values = array_merge($values, $wc['values']);
+		$statement .= $wc->statement;
+		$values = array_merge($values, $wc->values);
 
 		if (!empty($this->group_scope)) {
 			$statement .= ' GROUP BY ' . $this->group_scope;
 		}
 
 		if (!empty($this->order_scope)) {
-			$order_scope = array_merge(['by' => 'id', 'direction' => 'ASC'], $this->order_scope);
+			$order_scope = array_merge([ 'by' => 'id', 'direction' => 'ASC' ], $this->order_scope);
 
 			$statement .= ' ORDER BY ' . $order_scope['by'] . ' ' . $order_scope['direction'];
 		}

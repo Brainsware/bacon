@@ -136,7 +136,7 @@ abstract class Model extends \Sauce\Object
 
 	public static function find($id)
 	{
-		return Collection::_where(get_called_class(), [static::$primary_key => $id])->first();
+		return Collection::_where(get_called_class(), [ static::$primary_key => $id ])->first();
 	}
 
 	public static function all()
