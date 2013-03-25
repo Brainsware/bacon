@@ -284,7 +284,7 @@ class Collection extends \ArrayObject
 
 		$wc = $this->where_conditions();
 		$statement .= $wc->statement;
-		$values = array_merge($values, $wc->values);
+		$values = array_merge($values, $wc->values->to_array());
 
 		if (!empty($this->group_scope)) {
 			$statement .= ' GROUP BY ' . $this->group_scope;
@@ -339,20 +339,13 @@ class Collection extends \ArrayObject
 			foreach ($this->where_scope as $column_name => $condition) {
 				if (is_an_array($condition)) {
 					// array('id' => array(1, 2, 3)) => 'id IN (1, 2, 3)'
+					$conditions->push($this->table_name . '.' . $column_name . ' IN (' . str_repeat('?,', count($condition) - 1) . '?)');
 
-					$in_params = V();
-
-					$condition = V($condition);
-
-					foreach ($condition->to_array() as $c) {
-						$in_params->push($this->db->quote($c));
-					}
-
-					$conditions->push($this->table_name . '.' . $column_name . ' IN (' . $in_params->join(', ') . ')');
+					$values->push($condition);
 
 				} elseif (!$column_name) {
 					// String condition, for clauses that cover more complex conditions than simple ANDs.
-					$conditions->push("(" . $condition . ")")
+					$conditions->push("(" . $condition . ")");
 
 				} else {
 					if ($condition === null) {
