@@ -32,7 +32,7 @@ abstract class Model extends \Sauce\Object
 	protected static $relations;
 	protected static $scopes;
 
-	protected $errors;
+	protected $stored_errors;
 
 	private $column_data = [];
 	private $updated = false;
@@ -185,17 +185,17 @@ abstract class Model extends \Sauce\Object
 
 	public function errors ()
 	{
-		return V($this->errors);
+		return V($this->stored_errors);
 	}
 
 	public function has_errors ()
 	{
-		return $this->errors && !$this->errors->is_empty();
+		return $this->stored_errors && !$this->stored_errors->is_empty();
 	}
 
 	protected function error ($key, $message)
 	{
-		$this->errors->push(new ValidationError(['key' => $key, 'message' => $message]));
+		$this->stored_errors->push(new ValidationError([ 'key' => $key, 'message' => $message ]));
 	}
 
 	protected function validate ()
