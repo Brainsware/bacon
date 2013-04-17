@@ -99,12 +99,14 @@ abstract class Controller
 			$this->handle_upload();
 		}
 
-		$this->init();
-
-		$action_name = $options->action == 'new' ? '_new' : $options->action;
-
 		try {
-			$result = $this->$action_name();
+			$result = $this->init();
+
+			if (get_class($result) != '\\Bacon\\Presenter\\Redirect') {
+				$action_name = $options->action == 'new' ? '_new' : $options->action;
+
+				$result = $this->$action_name();
+			}
 
 			return A([
 				'data'    => $result,
