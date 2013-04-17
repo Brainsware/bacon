@@ -102,9 +102,9 @@ class Log
 				$this->open();
 			}
 
-			fwrite($this->file, date('d.m.Y H:i:s') . ' ' . $system . ': ' . $message . "\n");
+			fwrite($this->file, date(DATE_ATOM) . ' ' . $system . ': ' . $message . "\n");
 		} else {
-			syslog($level, date('d.m.Y H:i:s') . "$system | $loglevel | $message");
+			syslog($level, date(DATE_ATOM) . "$system | $loglevel | $message");
 		}
 	}
 
