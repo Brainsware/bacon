@@ -21,15 +21,17 @@ namespace Bacon\Exceptions;
 
 class ValidationError extends \ErrorException
 {
+	public $column;
+
 	public function __construct ($message = '', $code = 0, $previous = null)
 	{
 		if (is_an_array($message)) {
 			$error = A($message);
 
-			$key = $error->key;
-			$message = $error->message;
+			$this->column  = $error->column;
+			$this->message = $error->message;
 		} else {
-			$key = '(key not set)';
+			$this->column = '(column not set)';
 		}
 
 		return parent::__construct('[ValidationError: ' . $key . ']' . $message, $code, $previous);

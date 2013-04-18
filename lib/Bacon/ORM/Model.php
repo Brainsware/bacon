@@ -193,9 +193,9 @@ abstract class Model extends \Sauce\Object
 		return $this->stored_errors && !$this->stored_errors->is_empty();
 	}
 
-	protected function error ($key, $message)
+	protected function error ($column, $message)
 	{
-		$this->stored_errors->push(new ValidationError([ 'key' => $key, 'message' => $message ]));
+		$this->stored_errors->push(new ValidationError([ 'column' => $column, 'message' => $message ]));
 	}
 
 	protected function validate ()
