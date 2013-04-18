@@ -220,7 +220,7 @@ class Post extends \Bacon\ORM\Model
 {
 	public static $table_name = 'post';
 
-	public function validate ()
+	protected function validate ()
 	{
 		# Check whether the title is set
 		if (empty($this->title)) {
