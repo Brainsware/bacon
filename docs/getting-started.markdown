@@ -4,7 +4,7 @@ This article gets you started on working with Bacon as quickly as possible and g
 
 ## Installation {#installation}
 
-The bare minimum to get started with Bacon is PHP (>= 5.4.0) and composer. You can either install those from [php.net](http://php.net/) and [getcomposer.org](http://getcomposer.org/) respectively, or via your distribution.
+The bare minimum to get started with Bacon is PHP (>= 5.4.0), composer and git. You can either install those from [php.net](http://php.net/), [getcomposer.org](http://getcomposer.org/) and [git-scm.com](http://git-scm.com/) respectively, or via your distribution.
 This tutorial will not go into details of how to do that.
 
 Once you have PHP and composer set up, you can create a skeleton project with the following composer command:
