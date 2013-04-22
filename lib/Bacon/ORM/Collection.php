@@ -136,7 +136,7 @@ class Collection extends \ArrayObject
 				$values = $wc->values;
 				$statement = 'SELECT COUNT(*) AS count FROM ' . $this->table_name . $wc->statement;
 
-				$result = $this->db->query($statement, $values);
+				$result = $this->db->query($statement, $values->getArrayCopy());
 
 				return $result[0]['count'];
 
