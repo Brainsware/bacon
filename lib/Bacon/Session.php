@@ -70,6 +70,8 @@ class Session implements \ArrayAccess
 
 		$this->regenerate();
 		$this->refresh();
+
+		$this->last_used_at = time();
 	}
 
 	public function start ()
@@ -97,13 +99,12 @@ class Session implements \ArrayAccess
 		$this->destroy();
 		$this->start();
 
-		$this->last_used_at = time();
 		$this->created_at = time();
 	}
 
 	public function needs_refresh ()
 	{
-		return ($this->created_at + $this->refresh_timeout) <= time();
+		return ($this->refreshed_at + $this->refresh_timeout) <= time();
 	}
 
 	public function refresh ($force = false)
@@ -116,6 +117,7 @@ class Session implements \ArrayAccess
 			throw new \Exception('New session id could not be generated.');
 		}
 
+		$this->refreshed_at = time();
 		$this->id = session_id();
 	}
 
