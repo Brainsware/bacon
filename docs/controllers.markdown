@@ -27,7 +27,7 @@ The default fallback controller is the one called if no other route was found.
 
 Bacon relies on the [Front Controller Pattern](https://en.wikipedia.org/wiki/Front_Controller_pattern) and as such all requests should be handled by Bacon's `boot.php` included in `htdocs/index.php` of your skeleton project. Many modern Web Application Servers like [Nginx](http://wiki.nginx.org/Pitfalls#Front_Controller_Pattern_based_packages) and [Apache HTTPD](http://httpd.apache.org/docs/current/mod/mod_dir.html#fallbackresource) have a very simple way of implementing this.
 
-Supposing you use Apache, add this to your virtual host definition:
+For Apache, add this to your virtual host definition:
 
 ```
 # httpd.conf, in the VirtualHost:
