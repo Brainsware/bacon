@@ -51,6 +51,29 @@ class App
 
 		$this->log     = $log;
 		$this->session = $session;
+
+		if (empty($this->config->root_controller)) {
+			throw new Exceptions\RouterException('No root controller defined in Config\Base');
+		}
+
+		// Remove trailing Controllers\ namespace if present in configured root_controller
+		if (false !== strpos($this->config->root_controller, 'Controllers\\')) {
+			$this->config->root_controller = str_replace('Controllers\\', '', $this->config->root_controller);
+		}
+
+		// Set base_uri to be '/' if it is not configured
+		if (empty($this->config->base_uri)) {
+			$this->config->base_uri = '/';
+
+		} else {
+			// Trim whitespaces
+			$this->config->base_uri = trim($this->config->base_uri);
+
+			// Trim trailing slashes (as long as it's not only a slash)
+			if (strlen($this->config->base_uri) > 1) {
+				$this->config->base_uri = rtrim($this->config->base_uri, '/');
+			}
+		}
 	}
 
 	/* Parse route/params to find out which controller/action to call - falls
@@ -59,10 +82,15 @@ class App
 	{
 		try {
 			$this->router = new Router($uri, $method, $this->params);
+
+			if ($uri === $this->config->base_uri) {
+				return $this->use_root_controller();
+			}
+
 			$this->router->parse();
 
 			if ($this->router->route->is_empty()) {
-				$this->use_default_route();
+				$this->render();
 			} else {
 				$this->controller_name = 'Controllers\\' . $this->router->route->join('\\');
 			}
@@ -70,17 +98,37 @@ class App
 		} catch (Exceptions\RouterException $e) {
 			$this->log->error($e);
 
-			$this->use_default_route();
+			$this->use_not_found_route();
 		}
 	}
 
-	public function use_default_route ()
+	protected function use_root_controller ()
 	{
 		$this->router->clear();
-		$this->router->route->push((false === strpos($this->config->fallback, 'Controllers\\')) ? $this->config->fallback : str_replace('Controllers\\', '', $this->config->fallback));
+
+		$this->router->route->push($this->config->root_controller);
 		$this->router->action = 'index';
 
-		$this->controller_name = (false !== strpos($this->config->fallback, 'Controllers\\')) ? $this->config->fallback : 'Controllers\\' . $this->config->fallback;
+		$this->controller_name = 'Controllers\\' . $this->config->root_controller;
+	}
+
+	protected function use_not_found_controller ()
+	{
+		$this->router->clear();
+
+		$this->controller_name = 'Controllers\\NotFound';
+
+		// Check whether a 404 controller is available in the app, if not use Bacon's
+		if (!class_exists($this->controller_name)) {
+			$this->controller_name = 'Bacon\\' . $this->controller_name;
+		}
+
+		$this->router->push('NotFound');
+		$this->router->action = 'index';
+
+		/* Take the original URI and make it available as space-delimited string
+		 * so it can be put into a search box or similar */
+		$this->params->not_found = str_replace([ '/', '-' ], ' ', $this->params->uri);
 	}
 
 	/* Run determined route and process the results; either create an HTML
