@@ -6,5 +6,6 @@ These articles try to give a thorough overview on how to use Bacon and explains 
 * [ORM: Models and Collections](/articles/orm)
 * Controllers (TBD)
 * Presenters (TBD)
+* [Changelog](/articles/changelog)
 
 All articles are written in Markdown and available on [Github in the bacon-site repository](https://github.com/Brainsware/bacon-site/tree/master/Views/Articles) for you to fork!
