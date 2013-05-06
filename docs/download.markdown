@@ -1,6 +1,18 @@
+## Requirements {#requirements}
+
+* PHP (>= 5.4.0)
+* Git [git-scm.com](http://git-scm.com/)
+* Composer [getcomposer.org](http://getcomposer.org/)
+
 ## Creating a new project with Bacon {#create}
 
-The recommended way to download Bacon and start a project with is by using the `composer create-project` command. You can find that method explained [here](/articles/getting-started#installation).
+The recommended way to download Bacon and start a project with is by using the `composer create-project` command:
+
+```
+% composer create-project brainsware/bacon-dist ProjectName
+```
+
+You can find more info [here](/articles/getting-started#installation).
 
 ## Add Bacon to an existing project {#add}
 
