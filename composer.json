@@ -24,6 +24,14 @@
 		"minmb/phpmailer":                        "dev-master"
 	},
 
+	"require-dev": {
+		"php":                                    ">= 5.4.0",
+		"brainsware/sauce":                       "dev-master",
+		"twig/twig":                              "dev-master",
+		"brainsware/php-markdown-extra-extended": "dev-master",
+		"minmb/phpmailer":                        "dev-master"
+	},
+
 	"autoload": { "psr-0": { "Bacon": "lib/" } },
 
 	"bin" : [ "bin/server", "bin/coffee-compile" ]
