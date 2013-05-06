@@ -22,7 +22,7 @@
 ## 0.1.4 {#0-1-4}
 * [9f0ac8...](https://github.com/Brainsware/bacon/commit/9f0ac88a9c7ce5d4af1cd9c04121b9158288c551) Fixed the Router to accept all-lowercase URI parts as well
 
-# 0.1.3 {#0-1-3}
+## 0.1.3 {#0-1-3}
 * [3dc900...](https://github.com/Brainsware/bacon/commit/3dc9006bce26e6a9d57c8df59651ca13bf659cd2) Updated name of controllers directory (capital C)
 
 ## 0.1.2 {#0-1-2}
