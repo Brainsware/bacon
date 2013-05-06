@@ -1,4 +1,6 @@
-# 0.1.5
+# 0.1.* {#0-1-x}
+
+## 0.1.5 {#0-1-5}
 * [19ac99...](https://github.com/Brainsware/bacon/commit/19ac993b4359a42bfddf150b2d2287f9016e9f9f) Added license header for all files
 * [5d98a0...](https://github.com/Brainsware/bacon/commit/5d98a0584e2322eeeca1c7506cbaa6e2154e53e2) Added license header to scripts as well
 * [3ad819...](https://github.com/Brainsware/bacon/commit/3ad8196373e342c71ec0476b71bcde8935b3a229) Replaced array() with []
@@ -17,17 +19,17 @@
 * [0489da...](https://github.com/Brainsware/bacon/commit/0489da3ec6c7334d838fcefbc0bd625f5051ddc1) Model#validate is supposed to be protected, not public
 * [2494b1...](https://github.com/Brainsware/bacon/commit/2494b1d74896dab925393ede7911d87633a14d92) Added ValidationError class
 
-# 0.1.4
+## 0.1.4 {#0-1-4}
 * [9f0ac8...](https://github.com/Brainsware/bacon/commit/9f0ac88a9c7ce5d4af1cd9c04121b9158288c551) Fixed the Router to accept all-lowercase URI parts as well
 
-# 0.1.3
+# 0.1.3 {#0-1-3}
 * [3dc900...](https://github.com/Brainsware/bacon/commit/3dc9006bce26e6a9d57c8df59651ca13bf659cd2) Updated name of controllers directory (capital C)
 
-# 0.1.2
+## 0.1.2 {#0-1-2}
 * [faea74...](https://github.com/Brainsware/bacon/commit/faea74009dd2194376c9b30b294382e08d6f141c) Added a default value (true) for \Bacon\ORM\Model::timestamps
 * [76b9bc...](https://github.com/Brainsware/bacon/commit/76b9bcb802c86e6097d1937244ef35f5819e1daa) Copied over some content of the getting started page
 
-# 0.1.1
+## 0.1.1 {#0-1-1}
 * [0c9a17...](https://github.com/Brainsware/bacon/commit/0c9a176ecda6acb55a48797e038193608b705f94) Initial import
 * [5e24a1...](https://github.com/Brainsware/bacon/commit/5e24a1371ef6735e4caabbbe0dc72f2563fb48ec) Updated Readme
 * [8d435b...](https://github.com/Brainsware/bacon/commit/8d435b37c7de1f689eb7484d77ca4a0476c6904b) Fixed indentation
