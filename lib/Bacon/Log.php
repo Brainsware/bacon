@@ -54,12 +54,21 @@ class Log
 			$driver = $options->driver;
 		}
 
-		$this->driver = $driver;
-		$this->level  = $level;
+		if (defined('self::' . strtoupper($driver))) {
+			$this->driver = constant('self::' . strtoupper($driver));
+		} else {
+			$this->driver = self::SYSLOG;
+		}
+
+		if (defined('self::' . strtoupper($level))) {
+			$this->level = constant('self::' . strtoupper($level));
+		} else {
+			$this->level = self::INFO;
+		}
 
 		if ($this->driver == self::FILESYSTEM) {
 			if ($output_file === null) {
-				$this->filename = \Sauce\Path::join(APP_ROOT,  'logs', 'application.log');
+				$this->filename = \Sauce\Path::join(APP_ROOT, 'logs', 'application.log');
 			} else {
 				$this->filename = $output_file;
 			}
