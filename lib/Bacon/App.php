@@ -108,6 +108,7 @@ class App
 
 		$this->router->route->push($this->config->root_controller);
 		$this->router->action = 'index';
+		$this->router->type = 'html';
 
 		$this->controller_name = 'Controllers\\' . $this->config->root_controller;
 	}
@@ -125,6 +126,7 @@ class App
 
 		$this->router->push('NotFound');
 		$this->router->action = 'index';
+		$this->router->type = 'html';
 
 		/* Take the original URI and make it available as space-delimited string
 		 * so it can be put into a search box or similar */
