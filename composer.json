@@ -18,7 +18,7 @@
 
 	"require": {
 		"php":                                    ">= 5.4.0",
-		"brainsware/sauce":                       "0.1.0",
+		"brainsware/sauce":                       "0.1.1",
 		"twig/twig":                              "dev-master",
 		"brainsware/php-markdown-extra-extended": "dev-master",
 		"minmb/phpmailer":                        "dev-master"
