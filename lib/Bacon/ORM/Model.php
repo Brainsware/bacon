@@ -122,9 +122,11 @@ abstract class Model extends \Sauce\Object
 
 		$statement = 'DELETE FROM ' . static::$table_name;
 
-		$statement .= ' WHERE ' . $this->primary_key_condition();
+		$pk = $this->primary_key_condition();
 
-		$result = $this->db->query($statement);
+		$statement .= ' WHERE ' . $pk->statement;
+
+		$result = $this->db->query($statement, $pk->values->getArrayCopy());
 
 		$this->stored = true;
 		$this->updated = false;
@@ -221,7 +223,11 @@ abstract class Model extends \Sauce\Object
 
 		$statement .= implode(', ', $sets);
 
-		$statement .= ' WHERE ' . $this->primary_key_condition();
+		$pk = $this->primary_key_condition();
+
+		$statement .= ' WHERE ' . $pk->statement;
+
+		$values = array_merge($values, $pk->values->getArrayCopy());
 
 		$result = $this->db->query($statement, $values);
 
@@ -299,20 +305,23 @@ abstract class Model extends \Sauce\Object
 
     private function primary_key_condition () {
         $statement = '';
+        $values = V();
 
         if (is_array(static::$primary_key)) {
             $primary_keys_statement = [];
 
             foreach (static::$primary_key as $key) {
-                 array_push($primary_keys_statement, $key . ' = ' . $this[$key]);
+                 array_push($primary_keys_statement, $key . ' = ?');
+                 $values->push($this[$key]);
             }
 
             $statement .= implode(' AND ', $primary_keys_statement);
         } else {
-            $statement .= static::$primary_key . ' = ' . $this->db->quote($this[static::$primary_key]);
+            $statement .= static::$primary_key . ' = ?';
+            $values->push($this[static::$primary_key]);
         }
 
-        return $statement;
+        return A([ 'statement' => $statement, 'values' => $values ]);
     }
 
     protected function before_save () {}
