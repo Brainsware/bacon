@@ -48,7 +48,7 @@ class Html extends \Bacon\Presenter
 		}
 
 		$loader = new \Bacon\Loader(APP_ROOT . '/Views', $template_path);
-		$twig = new \Twig_Environment($loader, ['cache' => $cache]);
+		$twig = new \Twig_Environment($loader, ['cache' => $cache, 'auto_reload' => true]);
 
 		if (!empty($this->context->filters)) {
 			foreach ($this->context->filters->getArrayCopy() as $name => $function) {
