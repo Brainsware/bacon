@@ -40,8 +40,15 @@ class Html extends \Bacon\Presenter
 	{
 		$template_path = $route->join('/') . '/' . $this->context->template . '.tpl';
 
+		$cache = false;
+
+		if (isset(\Config\Base::$caching) && \Config\Base::$caching == true) {
+
+			$cache = (\Config\Base::$caching['twig'] ? APP_ROOT . '/cache' : false);
+		}
+
 		$loader = new \Bacon\Loader(APP_ROOT . '/Views', $template_path);
-		$twig = new \Twig_Environment($loader);
+		$twig = new \Twig_Environment($loader, ['cache' => $cache]);
 
 		if (!empty($this->context->filters)) {
 			foreach ($this->context->filters->getArrayCopy() as $name => $function) {
