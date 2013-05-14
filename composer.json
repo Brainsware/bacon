@@ -24,6 +24,10 @@
 		"minmb/phpmailer":                        "dev-master"
 	},
 
+	"require-dev": {
+		"brainsware/grease": "@dev"
+	},
+
 	"autoload": { "psr-0": { "Bacon": "lib/" } },
 
 	"bin" : [ "bin/server", "bin/coffee-compile" ]
