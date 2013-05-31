@@ -20,7 +20,7 @@ HOST_STR=$HOST:$PORT
 
 if [ "$HOST_STR" == ":" ]
 then
-	if [ ! -e "$CONFIG_DIR/server.php" ]
+	if [ ! -e "$CONFIG_DIR/Server.php" ]
 	then
 		HOST_STR=127.0.0.1:8080
 	else
