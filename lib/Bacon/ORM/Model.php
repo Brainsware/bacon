@@ -49,11 +49,21 @@ abstract class Model extends \Sauce\Object
 		parent::__construct($args);
 	}
 
-	public function __set($name, $value)
+	public function __set ($name, $value)
 	{
 		parent::__set($name, $value);
 
 		$this->updated = true;
+	}
+
+	public function __call ($method, $args)
+	{
+		try {
+			return parent::__call($method, $args);
+
+		} catch (\BadMethodCallException $e) {
+			return null;
+		}
 	}
 
 	public function save($options = [])
