@@ -29,22 +29,26 @@ class Loader extends \Twig_Loader_Filesystem
 {
 	protected $default_template;
 
-	public function __construct($paths, $default_template)
+	protected $base_template;
+
+	public function __construct($paths, $default_template, $base_template = true)
 	{
 		parent::__construct($paths);
 
 		$this->default_template = $default_template;
+
+		$this->base_template = $base_template;
 	}
 
 	public function getSource($name)
 	{
 		$source = file_get_contents($this->findTemplate($name));
 
-		if ($name == $this->default_template) {
+		if ($name == $this->default_template && $this->base_template) {
 			return '{% extends layout %}' . $source;
 		}
 
-		return $source;
+		return $source;	
 	}
 }
 
