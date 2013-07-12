@@ -28,8 +28,9 @@ namespace Bacon;
  */
 class Log
 {
-	const SYSLOG     = 0;
-	const FILESYSTEM = 1;
+	const SYSLOG     = 0; // Log by writing to syslog
+	const FILESYSTEM = 1; // Log by writing into a file
+	const STDERR     = 2; // Log using error_log
 
 	const DEBUG   = 3;
 	const INFO    = 2;
