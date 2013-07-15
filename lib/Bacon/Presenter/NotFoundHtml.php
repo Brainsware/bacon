@@ -17,15 +17,24 @@
 
 */
 
-namespace Bacon\Controllers;
+namespace Bacon\Presenter;
 
-class NotFound extends \Bacon\Controller
+class NotFoundHtml extends \Bacon\Presenter\Html
 {
-	public function index ()
+	public function __construct ($data, $context)
 	{
-		if (!file_exists(\Sauce\Path::join(APP_ROOT, 'Views/NotFound/index.tpl'))) {
-			return new \Bacon\Presenter\NotFoundHtml(null, Ar($this->params));
-		}
+		parent::__construct($data, $context);
+	}
+
+	public function render ($route, $log = null)
+	{
+		$views_path = \Sauce\Path::join(APP_ROOT, 'vendor/brainsware/bacon/Views');
+		$not_found_view_path = 'NotFound/index.tpl';
+
+		$loader = new \Bacon\Loader($views_path, $not_found_view_path, false);
+		$twig = new \Twig_Environment($loader);
+
+		echo $twig->render($not_found_view_path, $this->context->getArrayCopy());
 	}
 }
 

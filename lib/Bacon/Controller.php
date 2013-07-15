@@ -114,7 +114,7 @@ abstract class Controller
 			]);
 
 		} catch (\Exception $e) {
-			error_log($e->getMessage());
+			$this->log->error($e->getMessage());
 
 			return A([ 'data' => $this->http_status(500), 'context' => A($this->context) ]);
 		}
