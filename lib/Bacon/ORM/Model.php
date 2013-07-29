@@ -226,7 +226,7 @@ abstract class Model extends \Sauce\Object
 
 		foreach ($this->storage as $key => $value) {
 			if ($value !== null) {
-				$sets[] = '"' . $key . '" = ?';
+				$sets[] = $this->db->quoteColumns($key) . ' = ?';
 				$values[] = $value;
 			}
 		}

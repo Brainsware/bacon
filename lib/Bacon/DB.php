@@ -341,6 +341,16 @@ class DB extends \PDO
 			return [];
 		}
 	}
+
+	public function quoteColumns (
+		$string )
+	{
+		if ($this->dbtype == 'mysql') {
+			return '`' . $string . '`';
+		} else {
+			return '"' . $string . '"';
+		}
+	}
 }
 
 ?>
