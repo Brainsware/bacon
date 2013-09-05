@@ -23,6 +23,9 @@ class NotFound extends \Bacon\Controller
 {
 	public function index ()
 	{
+		if (!file_exists(\Sauce\Path::join(APP_ROOT, 'Views/NotFound/index.tpl'))) {
+			return new \Bacon\Presenter\NotFoundHtml(null, Ar($this->params));
+		}
 	}
 }
 
