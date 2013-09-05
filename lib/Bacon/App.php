@@ -44,10 +44,11 @@ class App
 
 	private $controller_name;
 
-	public function __construct($config, $session, $log, $params)
+	public function __construct($config, $session, $log, $params, $environment)
 	{
 		$this->config = $config;
 		$this->params = $params;
+		$this->environment = $environment;
 
 		$this->log     = $log;
 		$this->session = $session;
@@ -90,15 +91,15 @@ class App
 			$this->router->parse();
 
 			if ($this->router->route->is_empty()) {
-				$this->render();
+				return $this->use_root_controller();
 			} else {
 				$this->controller_name = 'Controllers\\' . $this->router->route->join('\\');
 			}
 
 		} catch (Exceptions\RouterException $e) {
-			$this->log->error($e);
+			$this->log->debug($e->getMessage());
 
-			$this->use_not_found_route();
+			$this->use_not_found_controller();
 		}
 	}
 
@@ -124,13 +125,13 @@ class App
 			$this->controller_name = 'Bacon\\' . $this->controller_name;
 		}
 
-		$this->router->push('NotFound');
+		$this->router->route->push('NotFound');
 		$this->router->action = 'index';
 		$this->router->type = 'html';
 
 		/* Take the original URI and make it available as space-delimited string
 		 * so it can be put into a search box or similar */
-		$this->params->not_found = str_replace([ '/', '-' ], ' ', $this->params->uri);
+		$this->router->params->not_found = str_replace([ '/', '-' ], ' ', $this->environment->request_uri);
 	}
 
 	/* Run determined route and process the results; either create an HTML
@@ -146,7 +147,7 @@ class App
 			'type'     => $this->router->type,
 			'base_uri' => $this->config->base_uri,
 			'params'   => $this->router->params
-		]);
+			]);
 
 		$result = $this->controller->call($options);
 
@@ -167,10 +168,10 @@ class App
 				$presenter = $result->data;
 			} else {
 				switch ($this->router->type) {
-					default:
-					case 'html':
-						$presenter = new \Bacon\Presenter\Html($result->data, $result->context);
-						break;
+				default:
+				case 'html':
+					$presenter = new \Bacon\Presenter\Html($result->data, $result->context);
+					break;
 				}
 			}
 

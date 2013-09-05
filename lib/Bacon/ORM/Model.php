@@ -207,6 +207,10 @@ abstract class Model extends \Sauce\Object
 
 	protected function error ($column, $message)
 	{
+		if (empty($this->stored_errors)) {
+			$this->stored_errors = V();
+		}
+
 		$this->stored_errors->push(new \Bacon\Exceptions\ValidationError([ 'column' => $column, 'message' => $message ]));
 	}
 
@@ -226,7 +230,7 @@ abstract class Model extends \Sauce\Object
 
 		foreach ($this->storage as $key => $value) {
 			if ($value !== null) {
-				$sets[] = '"' . $key . '" = ?';
+				$sets[] = $this->db->quoteColumns($key) . ' = ?';
 				$values[] = $value;
 			}
 		}
@@ -271,6 +275,7 @@ abstract class Model extends \Sauce\Object
 
 		$statement .= implode(', ', $value_set) . ')';
 
+		// TODO: lastid does not work with PostgreSQL
 		$result = $this->db->query($statement, $values, 'lastid');
 
 		$this->stored = true;

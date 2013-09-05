@@ -82,7 +82,7 @@ class Router
 
 					// Check whether second next part is the last part and 'edit'
 					// for URIs like /namespace/resource/:id/edit
-					if ($i + 3 == $count && $splitted_uri[$i + 2] == 'edit' && $this->http_method == 'get') {
+					if ($i + 3 == $count && $splitted_uri[$i + 2] === 'edit' && $this->http_method == 'get') {
 						$this->params->id = $next;
 						$this->action     = 'edit';
 
@@ -94,7 +94,7 @@ class Router
 						// call resource as given in last part.
 						$this->params[$current . '_id'] = $next;
 
-						$this->route->push($splitted_uri[$i + 2]);
+						$this->route->push(ucfirst($splitted_uri[$i + 2]));
 
 						switch($this->http_method) {
 							case 'get':  $this->action = 'index';  break;

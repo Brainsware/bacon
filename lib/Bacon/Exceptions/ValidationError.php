@@ -26,7 +26,7 @@ class ValidationError extends \ErrorException
 	public function __construct ($message = '', $code = 0, $previous = null)
 	{
 		if (is_an_array($message)) {
-			$error = A($message);
+			$error = Ar($message);
 
 			$this->column  = $error->column;
 			$this->message = $error->message;
@@ -34,7 +34,7 @@ class ValidationError extends \ErrorException
 			$this->column = '(column not set)';
 		}
 
-		return parent::__construct('[ValidationError: ' . $key . ']' . $message, $code, $previous);
+		return parent::__construct('[ValidationError: ' . $this->column . ']' . $this->message, $code, $previous);
 	}
 }
 

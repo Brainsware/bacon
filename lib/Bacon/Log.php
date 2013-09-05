@@ -28,8 +28,9 @@ namespace Bacon;
  */
 class Log
 {
-	const SYSLOG     = 0;
-	const FILESYSTEM = 1;
+	const SYSLOG     = 0; // Log by writing to syslog
+	const FILESYSTEM = 1; // Log by writing into a file
+	const STDERR     = 2; // Log using error_log
 
 	const DEBUG   = 3;
 	const INFO    = 2;
@@ -37,10 +38,10 @@ class Log
 	const ERROR   = 0;
 
 	private $levels = [
-		'DEBUG'   => 3,
-		'INFO'    => 2,
-		'WARNING' => 1,
-		'ERROR'   => 0
+		'debug'   => 3,
+		'info'    => 2,
+		'warning' => 1,
+		'error'   => 0
 	];
 
 	protected $file;
@@ -48,16 +49,19 @@ class Log
 	
 	public function __construct ($level = self::INFO, $driver = self::FILESYSTEM, $output_file = null)
 	{
+		$this->levels = A($this->levels);
+
 		if (is_an_array($level)) {
-			$options = $level;
-			$level = $options->level;
-			$driver = $options->driver;
+			$options     = $level;
+			$level       = $options->level;
+			$driver      = $options->driver;
+			$output_file = $options->file;
 		}
 
 		if (defined('self::' . strtoupper($driver))) {
 			$this->driver = constant('self::' . strtoupper($driver));
 		} else {
-			$this->driver = self::SYSLOG;
+			$this->driver = self::STDERR;
 		}
 
 		if (defined('self::' . strtoupper($level))) {
@@ -84,36 +88,49 @@ class Log
 		}
 	}
 
-	public function __call ($level, $message)
+	public function __call ($level, $messages)
 	{
-		if (!in_array(strtoupper($level), $this->levels)) {
-			return false;
-		} else {
-			$level = $this->levels[strtoupper($level)];
+		$messages = V($messages);
+
+		if (!$this->levels->keys()->includes(strtolower($level))) {
+			throw new \BadMethodCallException("Method not found: {$level} (" . $messages->join(', ') . ")");
 		}
+
+		$level = $this->levels[strtolower($level)];
 
 		if ($level > $this->level) { return; }
 
-		if (is_array($message)) {
-			$message = var_export($message, true);
-		}
+		foreach ($messages as $message) {
+			if (is_an_array($message)) {
+				$message = var_export($message, true);
+			}
 
-		if ($this->driver == self::FILESYSTEM) {
-			$this->_write($level, self::backtrace(), $message);
+			$this->_write($level, $message);
 		}
 	}
 
-	protected function _write ($level, $system, $message)
+	protected function _write ($level, $message)
 	{
-		if ($this->driver == self::FILESYSTEM) {
-			// Whaaaat.
-			if (!is_resource($this->file)) {
-				$this->open();
-			}
+		$caller = self::caller();
+		$level = strtoupper($this->levels->keys()[$level]);
 
-			fwrite($this->file, date(DATE_ATOM) . ' ' . $system . ': ' . $message . "\n");
-		} else {
-			syslog($level, date(DATE_ATOM) . "$system | $loglevel | $message");
+		$str = sprintf("[%s %s#%s] %s", $level, $caller->class, $caller->method, $message);
+
+		switch ($this->driver) {
+			case self::SYSLOG:
+				syslog($this->levels[strtolower($level)], sprintf("%s %s", date(DATE_ATOM), $str));
+				break;
+
+			case self::FILESYSTEM:
+				if (!is_resource($this->file)) { $this->open(); }
+
+				fwrite($this->file, sprintf("%s\n", $str));
+				break;
+
+			default:
+			case self::STDERR:
+				error_log($str);
+				break;
 		}
 	}
 
@@ -124,10 +141,22 @@ class Log
 	 *
 	 * @return string Either the classname or filename of the caller.
 	 */
-	public static function backtrace ( )
+	public static function caller ( )
 	{
-		$backtrace = debug_backtrace();
+		$backtrace = V(debug_backtrace());
 
+		foreach ($backtrace as $line) {
+			if ($line['class'] === 'Bacon\Log') continue;
+
+			return A([
+				'class'  => $line['class'],
+				'file'   => $line['file'],
+				'method' => $line['function'],
+				'object' => $line['object']
+			]);
+		}
+
+		/*
 		if (isset($backtrace[2]['class'])) {
 			return $backtrace[2]['class'];
 		} elseif (isset($backtrace[2]['file'])) {
@@ -135,6 +164,7 @@ class Log
 		} else {
 			return $backtrace[0]['file'];
 		}
+		 */
 	}
 
 	private function open ()
