@@ -155,6 +155,11 @@ class DB extends \PDO
 		}
 	}
 
+	public function type ()
+	{
+		return $this->dbtype;
+	}
+
 	/**
 	 * Helper function to build SQLite DB object
 	 */
@@ -243,7 +248,7 @@ class DB extends \PDO
 			throw $e;
 		}
 
-		$this->log->debug("Executing query:\n{$query}");
+		$this->log->info("Executing query:\n{$query}");
 
 		// Trying to execute
 		try {
@@ -252,7 +257,7 @@ class DB extends \PDO
 				$result = $this->$fetchMethod($stmt, $lastId);
 				$stmt = NULL;
 
-				//$this->log->debug('Query result: ' . print_r($result, true));
+				//$this->log->info('Query result: ' . print_r($result, true));
 				return $result;
 			} else {
 				$this->log->error('Error during query execution: ' . implode(', ', $stmt->errorInfo()) .

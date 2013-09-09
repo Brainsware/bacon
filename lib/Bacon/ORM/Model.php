@@ -275,8 +275,18 @@ abstract class Model extends \Sauce\Object
 
 		$statement .= implode(', ', $value_set) . ')';
 
-		// TODO: lastid does not work with PostgreSQL
 		$result = $this->db->query($statement, $values, 'lastid');
+
+		/* NOTE: PDO's lastInsertId does not work with PostgreSQL unless we supply
+		 *       the sequence name. This is a hack to circumvent this.
+		 *
+		 *       Also: it would be nice to handle this in the DB wrapper, but
+		 *       unfortunately we don't have any information about the query or table
+		 *       there, so the hack has to stay here for now.
+		 */
+		if ('pgsql' === $this->db->type()) {
+			$result = $this->db->lastInsertId(static::$table_name . '_id_seq');
+		}
 
 		$this->stored = true;
 		$this->updated = false;
