@@ -34,7 +34,7 @@ class ValidationError extends \ErrorException
 			$this->column = '(column not set)';
 		}
 
-		return parent::__construct('[ValidationError: ' . $key . ']' . $message, $code, $previous);
+		return parent::__construct('[ValidationError: ' . $this->column . ']' . $this->message, $code, $previous);
 	}
 }
 
