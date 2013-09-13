@@ -207,10 +207,9 @@ abstract class Model extends \Sauce\Object
 
 	protected function error ($column, $message)
 	{
-		if (empty($this->stored_errors)) {
+		if (!is_object($this->stored_errors)) {
 			$this->stored_errors = V();
 		}
-
 		$this->stored_errors->push(new \Bacon\Exceptions\ValidationError([ 'column' => $column, 'message' => $message ]));
 	}
 
