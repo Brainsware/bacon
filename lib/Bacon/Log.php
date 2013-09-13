@@ -146,13 +146,15 @@ class Log
 		$backtrace = V(debug_backtrace());
 
 		foreach ($backtrace as $line) {
-			if ($line['class'] === 'Bacon\Log') continue;
+			$line = A($line);
+
+			if ($line->class === 'Bacon\Log') continue;
 
 			return A([
-				'class'  => $line['class'],
-				'file'   => $line['file'],
-				'method' => $line['function'],
-				'object' => $line['object']
+				'class'  => $line->class,
+				'file'   => $line->file,
+				'method' => $line->function,
+				'object' => $line->object
 			]);
 		}
 
