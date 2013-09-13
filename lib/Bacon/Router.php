@@ -56,7 +56,7 @@ class Router
 
 			$path = \Sauce\Path::join(APP_ROOT, 'Controllers', $this->route, ucfirst($current));
 
-			if (is_dir($path) && is_file(\Sauce\Path::join($path, ucfirst($next) . '.php'))) {
+			if (is_dir($path) && is_file(\Sauce\Path::join($path->to_s(), ucfirst($next) . '.php'))) {
 				// Current part is a namespace
 				$this->route->push(ucfirst($current));
 
