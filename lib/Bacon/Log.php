@@ -32,16 +32,16 @@ class Log
 	const FILESYSTEM = 1; // Log by writing into a file
 	const STDERR     = 2; // Log using error_log
 
-	const DEBUG   = 3;
-	const INFO    = 2;
-	const WARNING = 1;
 	const ERROR   = 0;
+	const WARNING = 1;
+	const INFO    = 2;
+	const DEBUG   = 3;
 
 	private $levels = [
-		'debug'   => 3,
-		'info'    => 2,
+		'error'   => 0,
 		'warning' => 1,
-		'error'   => 0
+		'info'    => 2,
+		'debug'   => 3,
 	];
 
 	protected $file;
