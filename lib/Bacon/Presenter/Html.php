@@ -40,6 +40,12 @@ class Html extends \Bacon\Presenter
 	{
 		$template_path = $route->join('/') . '/' . $this->context->template . '.tpl';
 
+		$template_base_path = APP_ROOT . '/Views';
+
+		if (!empty($this->context->template_base_path)) {
+			$template_base_path = [$template_base_path, $this->context->template_base_path];
+		}
+
 		$cache = false;
 
 		if (isset(\Config\Base::$caching) && \Config\Base::$caching == true) {
@@ -47,7 +53,7 @@ class Html extends \Bacon\Presenter
 			$cache = (\Config\Base::$caching['twig'] ? APP_ROOT . '/cache' : false);
 		}
 
-		$loader = new \Bacon\Loader(APP_ROOT . '/Views', $template_path);
+		$loader = new \Bacon\Loader($template_base_path, $template_path);
 		$twig = new \Twig_Environment($loader, ['cache' => $cache, 'auto_reload' => true]);
 
 		if (!empty($this->context->filters)) {
