@@ -153,7 +153,7 @@ class Collection extends \ArrayObject
 		return $this->count() == 0;
 	}
 
-	public function select($args)
+	public function columns($args)
 	{
 		if (!is_an_array($args)) {
 			$args = [ $args ];
@@ -237,13 +237,13 @@ class Collection extends \ArrayObject
 		$collection = new Collection($arguments[0]);
 
 		switch ($name) {
-			case '_select': return $collection->select($arguments[1]);
-			case '_where':  return $collection->where($arguments[1]);
-			case '_order':  return $collection->order($arguments[1], $arguments[2]);
-			case '_group':  return $collection->group($arguments[1]);
-			case '_limit':  return $collection->limit($arguments[1]);
-			case '_offset': return $collection->offset($arguments[1]);
-			case '_all':    return $collection->all();
+			case '_columns': return $collection->columns($arguments[1]);
+			case '_where':   return $collection->where($arguments[1]);
+			case '_order':   return $collection->order($arguments[1], $arguments[2]);
+			case '_group':   return $collection->group($arguments[1]);
+			case '_limit':   return $collection->limit($arguments[1]);
+			case '_offset':  return $collection->offset($arguments[1]);
+			case '_all':     return $collection->all();
 
 			default: throw new \Bacon\Exceptions\MethodNotFound();
 		}

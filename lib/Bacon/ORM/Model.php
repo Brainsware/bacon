@@ -156,9 +156,9 @@ abstract class Model extends \Sauce\Object
 		return Collection::_all(get_called_class());
 	}
 
-	public static function select($args)
+	public static function columns($args)
 	{
-		return Collection::_select(get_called_class(), $args);
+		return Collection::_columns(get_called_class(), $args);
 	}
 
 	public static function where($args = [])
