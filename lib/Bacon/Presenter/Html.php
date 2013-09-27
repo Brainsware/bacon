@@ -42,10 +42,6 @@ class Html extends \Bacon\Presenter
 
 		$template_base_path = APP_ROOT . '/Views';
 
-		if (!empty($this->context->template_base_path)) {
-			$template_base_path = [$template_base_path, $this->context->template_base_path];
-		}
-
 		$cache = false;
 
 		if (isset(\Config\Base::$caching) && \Config\Base::$caching == true) {
@@ -55,6 +51,12 @@ class Html extends \Bacon\Presenter
 
 		$loader = new \Bacon\Loader($template_base_path, $template_path);
 		$twig = new \Twig_Environment($loader, ['cache' => $cache, 'auto_reload' => true]);
+
+		if (!empty($this->context->template_base_paths)) {
+			foreach ($this->context->template_base_paths as $path) {
+				$loader->addPath($path);
+			}
+		}
 
 		if (!empty($this->context->filters)) {
 			foreach ($this->context->filters->getArrayCopy() as $name => $function) {

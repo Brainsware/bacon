@@ -177,6 +177,15 @@ abstract class Controller
 		$this->context->filters->$name = $function;
 	}
 
+	protected function add_template_base_path ($path)
+	{
+		if (empty($this->context->template_base_paths)) {
+			$this->context->template_base_paths = V([]);
+		}
+
+		$this->context->template_base_paths->push($path);
+	}
+
     protected function respond_to ($function)
     {
         $this->_respond_to = $function;
