@@ -29,6 +29,20 @@ abstract class Model extends \Sauce\Object
 	protected static $created_at = 'created_at';
 	protected static $updated_at = 'updated_at';
 
+	/**
+	protected static $relations = [
+		# Name of the relation
+		'name' =>
+			[
+			# Modelname
+			'model'  => '\Namespace\ModelName',
+			# Columnname, defaults to relationname + _id
+			'column' => 'column_name'
+			# Relation type; either otm (one to many) or mto (many to one)
+			# Defaults to mto
+			'type'   => 'otm'
+			]];
+	*/
 	protected static $relations;
 	protected static $scopes;
 
@@ -58,6 +72,32 @@ abstract class Model extends \Sauce\Object
 
 	public function __call ($method, $args)
 	{
+		if (is_array(static::$relations) && in_array($method, array_keys(static::$relations))) {
+			$model = static::$relations[$method]['model'];
+				
+			if (isset(static::$relations[$method]['column'])) {
+				$column = static::$relations[$method]['column'];
+			} else {
+				$column = $method . '_id';
+			}
+
+			if (isset(static::$relations[$method]['type'])) {
+				$type = static::$relations[$method]['type'];
+			} else {
+				$type = 'mto';
+			}
+
+			if ($type == 'mto') {
+				try {
+					return $model::find($this->$column);
+				} catch (\PDOException $e) {
+					return null;
+				}
+			} else {
+				return $model::where([ $column => $this->id ])->all();
+			}
+		}
+
 		try {
 			return parent::__call($method, $args);
 
@@ -68,7 +108,10 @@ abstract class Model extends \Sauce\Object
 
 	public function save($options = [])
 	{
-		if ($this->stored && !$this->updated && in_array(static::$primary_key, $this->keys(true)) && $this[static::$primary_key]) {
+		if ($this->stored
+			&& !$this->updated
+			//&& in_array(static::$primary_key, $this->keys(true))
+			&& $this[static::$primary_key]) {
 			// Nothing changed, not doing anything.
 			return true;
 		}
