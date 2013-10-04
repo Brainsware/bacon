@@ -302,10 +302,10 @@ abstract class Model extends \Sauce\Object
 		$statement = 'INSERT INTO ' . static::$table_name . ' (';
 
 		if (isset($options['include_primary_key'])) {
-			$statement .= implode(', ', $this->_keys(false)) . ') VALUES (';
+			$statement .= implode(', ', $this->_keys(false, true)) . ') VALUES (';
 			$values = $this->_values(false);
 		} else {
-			$statement .= implode(', ', $this->_keys(true)) . ') VALUES (';
+			$statement .= implode(', ', $this->_keys(true, true)) . ') VALUES (';
 			$values = $this->_values();
 		}
 
@@ -339,17 +339,17 @@ abstract class Model extends \Sauce\Object
 		return true;
 	}
 
-	private function _keys($exclude_primary_key = false)
+	private function _keys($exclude_primary_key = false, $escape_keys = false)
 	{
 		$keys = [];
 
 		foreach($this->storage as $key => $value) {
 			if ($exclude_primary_key) {
 				if ($key != static::$primary_key) {
-					$keys[] = $key;
+					$keys[] = $escape_keys ? $this->db->quoteColumns($key) : $key;
 				}
 			} else {
-				$keys[] = $key;
+				$keys[] = $escape_keys ? $this->db->quoteColumns($key) : $key;
 			}
 		}
 
