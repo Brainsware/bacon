@@ -38,9 +38,9 @@ abstract class Model extends \Sauce\Object
 			'model'  => '\Namespace\ModelName',
 			# Columnname, defaults to relationname + _id
 			'column' => 'column_name'
-			# Relation type; either otm (one to many) or mto (many to one)
-			# Defaults to mto
-			'type'   => 'otm'
+			# Relation type; either has_many or has_one
+			# Defaults to has_one
+			'type'   => 'has_one'
 			]];
 	*/
 	protected static $relations;
@@ -84,16 +84,16 @@ abstract class Model extends \Sauce\Object
 			if (isset(static::$relations[$method]['type'])) {
 				$type = static::$relations[$method]['type'];
 			} else {
-				$type = 'mto';
+				$type = 'has_one';
 			}
 
-			if ($type == 'mto') {
+			if ($type == 'has_one') {
 				try {
 					return $model::find($this->$column);
 				} catch (\PDOException $e) {
 					return null;
 				}
-			} else {
+			} elseif ($type == 'has_many') {
 				return $model::where([ $column => $this->id ])->all();
 			}
 		}
@@ -261,7 +261,7 @@ abstract class Model extends \Sauce\Object
 
 	}
 
-	private function update()
+	private function update ()
 	{
 		$this->before_update();
 
