@@ -223,9 +223,11 @@ class Collection extends \ArrayObject
 
 	/* Same as #offset, but takes a per_page parameter. */
 	// TODO: implement the per_page parameter to override the one in the model
-	public function page ($page)
+	public function page ($page, $per_page = null)
 	{
 		$model = $this->model;
+
+		if($per_page === null) { $per_page = $model::$per_page; }
 
 		$this->offset($page * $model::$per_page)->limit($model::$per_page);
 
