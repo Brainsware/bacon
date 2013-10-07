@@ -90,10 +90,11 @@ abstract class Controller
 
 	public function call($options)
 	{
-		$this->action   = $options->action;
-		$this->params   = $options->params;
-		$this->type     = $options->type;
-		$this->base_uri = $options->base_uri;
+		$this->action      = $options->action;
+		$this->params      = $options->params;
+		$this->environment = $options->environment;
+		$this->type        = $options->type;
+		$this->base_uri    = $options->base_uri;
 
 		if ($this->is_upload_controller()) {
 			$this->handle_upload();
@@ -102,7 +103,7 @@ abstract class Controller
 		try {
 			$result = $this->init();
 
-			if (get_class($result) != '\\Bacon\\Presenter\\Redirect') {
+			if (!is_a($result, '\Bacon\Presenter')) {
 				$action_name = $options->action == 'new' ? '_new' : $options->action;
 
 				$result = $this->$action_name();

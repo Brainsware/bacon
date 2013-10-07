@@ -143,10 +143,11 @@ class App
 		$this->controller = new $name($this->session, $this->log);
 
 		$options = A([
-			'action'   => $this->router->action,
-			'type'     => $this->router->type,
-			'base_uri' => $this->config->base_uri,
-			'params'   => $this->router->params
+			'action'      => $this->router->action,
+			'type'        => $this->router->type,
+			'base_uri'    => $this->config->base_uri,
+			'params'      => $this->router->params,
+			'environment' => $this->environment
 			]);
 
 		$result = $this->controller->call($options);
