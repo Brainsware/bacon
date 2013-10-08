@@ -48,17 +48,6 @@ class Collection extends \ArrayObject
 		$this->db          = \Bacon\DB::__getInstance();
 	}
 
-	public function __call($name, $arguments)
-	{
-		if (empty($this->select_list)) {
-			$this->select_list = [];
-		}
-
-		$this->select_list[$name] = $arguments[0];
-
-		return $this;
-	}
-
 	public function offsetGet($offset)
 	{
 		if (!$this->loaded) {
