@@ -94,7 +94,7 @@ abstract class Model extends \Sauce\Object
 					return null;
 				}
 			} elseif ($type == 'has_many') {
-				return $model::where([ $column => $this->id ])->all();
+				return $model::where([ $column => $this->id ]);
 			}
 		}
 
