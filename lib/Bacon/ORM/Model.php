@@ -72,6 +72,38 @@ abstract class Model extends \Sauce\Object
 
 	public function __call ($method, $args)
 	{
+		$relations = A(static::$relations);
+
+		if ($relations->keys()->includes($method)) {
+			$model  = $relations->$method->model;
+			$column = strtolower($relations->$method->column);
+			$type   = strtolower($relations->$method->type);
+
+			if (!V([ 'belongs_to', 'has_one', 'has_many' ])->includes($type)) {
+				throw new \InvalidArgumentException("Given relation type is not valid: {$type}\nSupported types are: belongs_to, has_one and has_many");
+			}
+
+			if (!$column) $column = "{$model}_id";
+			if (!$type) $type = 'belongs_to';
+
+			switch ($type) {
+				case 'belongs_to':
+					return $model::find($this->$column);
+					break;
+
+				case 'has_one':
+					return $model::where([ $column => $this->id ])->first();
+					break;
+
+				case 'has_many':
+					return $model::where([ $column => $this->id ]);
+					break;
+			}
+		}
+
+		return parent::__call($method, $args);
+
+		/*
 		if (is_array(static::$relations) && in_array($method, array_keys(static::$relations))) {
 			$model = static::$relations[$method]['model'];
 				
@@ -104,6 +136,7 @@ abstract class Model extends \Sauce\Object
 		} catch (\BadMethodCallException $e) {
 			return null;
 		}
+		 */
 	}
 
 	public function save($options = [])
