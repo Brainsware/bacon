@@ -56,7 +56,7 @@ abstract class Model extends \Sauce\Object
 
 	public function __construct($args = [], $stored = false)
 	{
-		$this->db = \Bacon\DB::__getInstance();
+		$this->db = \Bacon\ORM\DatabaseSingleton::get_instance();
 
 		$this->stored = $stored;
 

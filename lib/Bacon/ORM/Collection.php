@@ -19,10 +19,6 @@
 
 namespace Bacon\ORM;
 
-/**
- * @package System
- * @module Collection
- */
 class Collection extends \ArrayObject
 {
 	protected $db;
@@ -45,7 +41,7 @@ class Collection extends \ArrayObject
 		$this->model       = $model;
 		$this->table_name  = $model::table_name();
 		$this->primary_key = $model::primary_key();
-		$this->db          = \Bacon\DB::__getInstance();
+		$this->db          = \Bacon\ORM\DatabaseSingleton::get_instance();
 	}
 
 	public function offsetGet($offset)

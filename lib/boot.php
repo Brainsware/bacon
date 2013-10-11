@@ -44,6 +44,7 @@ if (!defined('HTDOCS')) {
 $log = new \Bacon\Log($config->logging);
 
 Bacon\DB::setLog($log);
+Bacon\ORM\DatabaseSingleton::set_logger($log);
 
 if (is_cli()) {
 	$session = new \Sauce\Object();

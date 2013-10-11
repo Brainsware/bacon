@@ -37,7 +37,7 @@ class Form extends \stdClass implements Handler
         $path = $directory . '/' . $name;
 
         if ((!isset($this->overwrite_existing) || !$this->overwrite_existing) && file_exists($path)) {
-            $this->log->error('Trying to overwrite existing file (' . $path . '), but overwriting is disabled!');
+            $this->log->error("Trying to overwrite existing file ({$path}), but overwriting is disabled!");
 
             throw new \Exception('You already uploaded this image!');
         }

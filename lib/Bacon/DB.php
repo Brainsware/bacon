@@ -66,7 +66,7 @@ class DB extends \PDO
 		}
 
 		if (!is_string($name)) {
-			static::$static_log->error('Wrong db instance parameter: ' . $name);
+			static::$static_log->error("Wrong db instance parameter: {$name}");
 
 			return false;
 		}
@@ -106,7 +106,7 @@ class DB extends \PDO
 			}
 
 			if (!$dbconfig) {
-				$this->log->fatal('Database config section "' . $configsection . '" not set. Please check your config file.');
+				$this->log->fatal("Database config section \"{$configsection}\" not set. Please check your config file.");
 			}
 		}
 
@@ -132,13 +132,13 @@ class DB extends \PDO
 		// Build the connection
 		try {
 			if ($this->dbtype == 'sqlite') {
-				parent::__construct($this->dbtype . ':' . $this->dbname);
+				parent::__construct("{$this->dbtype}:{$this->dbname}");
 			} else {
 				parent::__construct(
-					$this->dbtype . ':host=' . $this->dbserver .
-					(!empty($this->dbname) ? ';dbname=' . $this->dbname : '') .
-					(!empty($this->dbport) ? ';port=' . $this->dbport : ''),
-						$this->dbuser, $this->dbpass, $this->dbpersist);
+					"{$this->dbtype}:host={$this->dbserver}" .
+					(!empty($this->dbname) ? ";dbname={$this->dbname}" : '') .
+					(!empty($this->dbport) ? ";port={$this->dbport}" : ''),
+					$this->dbuser, $this->dbpass, $this->dbpersist);
 			}
 
 		} catch (\PDOException $e) {
@@ -151,7 +151,7 @@ class DB extends \PDO
 		}
 
 		if ($this->dbtype == 'mysql' && !empty($dbconfig['encoding'])) {
-			$this->query('SET CHARACTER SET ' . $dbconfig['encoding']);
+			$this->query("SET CHARACTER SET {$dbconfig['encoding']}");
 		}
 	}
 
@@ -229,26 +229,24 @@ class DB extends \PDO
 		$fetchMode    = 'multi',
 		$lastId       = NULL)
 	{
-		$this->log->debug('Executing query: \'' . $query . '\' with values: \'' . serialize($values) . '\'');
-
 		// try to prepare. PDO has different error handling strategies
 		// this is why this code looks so ugly.
 		try {
 			if (!$stmt = $this->prepare($query)) {
 				$error_info = \PDO::errorInfo();
 
-				$this->log->error('Error during query preparation: ' . $error_info[2] . ' Query: \'' . $query  . '\'');
+				$this->log->error("Error during query preparation:\n{$error_info[2]}\nQuery:\n{$query}");
 
 				return false;
 			}
 
 		} catch (PDOException $e) {
-			$this->log->error('Error during query preparation: ' . $e->getMessage() . ' Query: \'' . $query .  '\'');
+			$this->log->error("Error during query preparation: {$e->getMessage()}\nQuery:\n{$query}");
 
 			throw $e;
 		}
 
-		$this->log->info("Executing query:\n{$query}");
+		$this->log->info("Executing query:\n{$query}\nwith values:\n" . var_export($values, true));
 
 		// Trying to execute
 		try {
@@ -257,18 +255,21 @@ class DB extends \PDO
 				$result = $this->$fetchMethod($stmt, $lastId);
 				$stmt = NULL;
 
-				//$this->log->info('Query result: ' . print_r($result, true));
 				return $result;
+
 			} else {
-				$this->log->error('Error during query execution: ' . implode(', ', $stmt->errorInfo()) .
-					       ' Query: \'' . $query . '\' Values: \'' . serialize($values) . '\'');
+				$error = implode(', ', $stmt->errorInfo());
+				$serialized_values = var_export($values, true);
+
+				$this->log->error("Error during query execution: {$error}\nQuery:\n{$query}\nValues:{$serialized_values}");
 
 				throw new PDOException(implode(', ', $stmt->errorInfo()));
 			}
 
 		} catch (PDOException $e) {
-			$this->log->error('Error during query execution: ' . $e->getMessage() .
-				       ' Query: \'' . $query . '\' Values: \'' . serialize($values) . '\'');
+			$serialized_values = var_export($values, true);
+
+			$this->log->error("Error during query execution: {$e->getMessage()}\nQuery:\n{$query}\nValues:{$serialized_values}");
 
 			throw $e;
 		}
