@@ -75,16 +75,13 @@ abstract class Model extends \Sauce\Object
 		$relations = A(static::$relations);
 
 		if ($relations->keys()->includes($method)) {
-			$model  = $relations->$method->model;
-			$column = strtolower($relations->$method->column);
-			$type   = strtolower($relations->$method->type);
+			$model  = $relations[$method]['model'];
+			$column = isset($relations[$method]['column']) ? strtolower($relations[$method]['column']) : $method . '_id';
+			$type = isset($relations[$method]['type']) ? strtolower($relations[$method]['type']) : 'belongs_to';
 
 			if (!V([ 'belongs_to', 'has_one', 'has_many' ])->includes($type)) {
 				throw new \InvalidArgumentException("Given relation type is not valid: {$type}\nSupported types are: belongs_to, has_one and has_many");
 			}
-
-			if (!$column) $column = "{$model}_id";
-			if (!$type) $type = 'belongs_to';
 
 			switch ($type) {
 				case 'belongs_to':
@@ -102,41 +99,6 @@ abstract class Model extends \Sauce\Object
 		}
 
 		return parent::__call($method, $args);
-
-		/*
-		if (is_array(static::$relations) && in_array($method, array_keys(static::$relations))) {
-			$model = static::$relations[$method]['model'];
-				
-			if (isset(static::$relations[$method]['column'])) {
-				$column = static::$relations[$method]['column'];
-			} else {
-				$column = $method . '_id';
-			}
-
-			if (isset(static::$relations[$method]['type'])) {
-				$type = static::$relations[$method]['type'];
-			} else {
-				$type = 'has_one';
-			}
-
-			if ($type == 'has_one') {
-				try {
-					return $model::find($this->$column);
-				} catch (\PDOException $e) {
-					return null;
-				}
-			} elseif ($type == 'has_many') {
-				return $model::where([ $column => $this->id ]);
-			}
-		}
-
-		try {
-			return parent::__call($method, $args);
-
-		} catch (\BadMethodCallException $e) {
-			return null;
-		}
-		 */
 	}
 
 	public function save($options = [])
