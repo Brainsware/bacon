@@ -43,6 +43,7 @@ class Database extends \PDO
 			$this->config->username,
 			$this->config->password,
 			[ \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+			  \PDO::ATTR_EMULATE_PREPARES   => false,
 			  \PDO::ATTR_PERSISTENT         => $this->config->persistent,
 		      \PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET {$this->config->encoding}" ]
 		);
@@ -84,7 +85,9 @@ class Database extends \PDO
 			return $result;
 
 		} catch (\PDOException $e) {
-			$this->log->info("Error during execution of query:\n{$query}\nwith values:\n" . var_export($values, true));
+			$this->log->error("Error during execution of query:\n{$query}\nwith values:\n" . var_export($values, true));
+
+			$this->log->error($e->getMessage());
 
 			throw $e;
 		}
@@ -134,12 +137,12 @@ class Database extends \PDO
 
 	protected function fetch_one ($statement, $last_id)
 	{
-		return $this->fetchSingle($statement);
+		return $this->fetch_single($statement, $last_id);
 	}
 
 	protected function fetch_single ($statement, $last_id)
 	{
-		$result = $this->fetchColumn();
+		$result = $statement->fetchColumn();
 
 		if (empty($result)) {
 			return false;
@@ -180,6 +183,11 @@ class Database extends \PDO
 		}
 
 		return "\"{$name}\"";
+	}
+
+	public function type ()
+	{
+		return $this->config->type;
 	}
 
 	protected function connection_string ()

@@ -188,7 +188,7 @@ abstract class Model extends \Sauce\Object
 		/* VALUES (?...) */
 		$statement .= 'VALUES (' . str_repeat('?, ', $this->_values(true)->count() - 1) . ', ?)';
 
-		$result = $this->db->query($statement, $values, 'lastid');
+		$result = $this->db->query($statement, $values, 'last_id');
 
 		$this->stored = true;
 		$this->updated = false;

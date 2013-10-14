@@ -312,7 +312,7 @@ abstract class Model extends \Sauce\Object
 
 		$statement .= implode(', ', $value_set) . ')';
 
-		$result = $this->db->query($statement, $values, 'lastid');
+		$result = $this->db->query($statement, $values, 'last_id');
 
 		/* NOTE: PDO's lastInsertId does not work with PostgreSQL unless we supply
 		 *       the sequence name. This is a hack to circumvent this.
