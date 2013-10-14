@@ -13,15 +13,14 @@
 
 	"support": {
 		"source": "https://github.com/Brainsware/bacon",
-		"issues": "https://github.com/Brainsware/bacon/issues"
+		"issues": "https://github.com/Brainsware/bacon/issues",
+		"forum":  "http://baconphp.net/forum"
 	},
 
 	"require": {
-		"php":                                    ">= 5.4.0",
-		"brainsware/sauce":                       "@dev",
-		"twig/twig":                              "dev-master",
-		"brainsware/php-markdown-extra-extended": "dev-master",
-		"minmb/phpmailer":                        "dev-master"
+		"php":              ">= 5.4.0",
+		"brainsware/sauce": "@dev",
+		"twig/twig":        "dev-master"
 	},
 
 	"require-dev": {
