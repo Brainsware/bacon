@@ -173,7 +173,7 @@ class Database extends \PDO
 		return $this->rowCount();
 	}
 
-	protected function quote_column ($name)
+	public function quote_column ($name)
 	{
 		if ('mysql' == $this->config->type) {
 			return "`{$name}`";
