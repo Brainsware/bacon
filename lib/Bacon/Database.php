@@ -261,6 +261,12 @@ class Database extends \PDO
 			}
 		}
 
+		if ('mysql' == $config->type && empty($config->encoding)) {
+			$this->log->warning("Using MySQL but no encoding was given, defaulting to 'UTF8'. If you are using another encoding, please make sure to add it to your Config/Database.php.");
+
+			$config->encoding = 'UTF8';
+		}
+
 		return $config;
 	}
 }
