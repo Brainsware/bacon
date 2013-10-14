@@ -267,7 +267,7 @@ abstract class Model extends \Sauce\Object
 
 		foreach ($this->storage as $key => $value) {
 			if ($value !== null) {
-				$sets[] = $this->db->quoteColumns($key) . ' = ?';
+				$sets[] = $this->db->quote_column($key) . ' = ?';
 				$values[] = $value;
 			}
 		}
@@ -341,10 +341,10 @@ abstract class Model extends \Sauce\Object
 		foreach($this->storage as $key => $value) {
 			if ($exclude_primary_key) {
 				if ($key != static::$primary_key) {
-					$keys[] = $escape_keys ? $this->db->quoteColumns($key) : $key;
+					$keys[] = $escape_keys ? $this->db->quote_column($key) : $key;
 				}
 			} else {
-				$keys[] = $escape_keys ? $this->db->quoteColumns($key) : $key;
+				$keys[] = $escape_keys ? $this->db->quote_column($key) : $key;
 			}
 		}
 
