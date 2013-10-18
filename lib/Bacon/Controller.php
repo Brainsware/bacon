@@ -136,6 +136,10 @@ abstract class Controller
 		return new \Bacon\Presenter\Http($code, $this->params);
 	}
 
+	public function atom () {
+		return new \Bacon\Presenter\Atom($this->params, $this->context);
+	}
+
 	public function __set ($name, $value)
 	{
 		$this->context[$name] = $value;
