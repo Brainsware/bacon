@@ -31,10 +31,10 @@ class Redirect extends \Bacon\Presenter
 		$from = $this->context->request_uri;
 		$to = implode('/', $this->data);
 
-		if ($to[0] != '/') {
+		if (!S($to)->starts_with('http://') && !S($to)->starts_with('https://') && $to[0] != '/') {
 			$to = '/' . $to;
 		}
-
+		
 		if ($log) {
 			$log->info("Redirecting {$from} to {$to}");
 		}
