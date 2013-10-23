@@ -34,19 +34,23 @@ trait Errors
 	/* Initializes a new error store. */
 	protected function __construct_errors ()
 	{
-		$this->errors = V([]);
+		$this->__errors = V([]);
 	}
 
 	/* Returns the contents of the error store. */
 	public function errors ()
 	{
-		return $this->errors;
+		if (!$this->__errors) { $this->__construct_errors(); }
+
+		return V($this->__errors);
 	}
 
 	/* Returns whether or not the store contains any errors. */
 	public function has_errors ()
 	{
-		return !$this->errors->is_empty();
+		if (!$this->__errors) { $this->__construct_errors(); }
+
+		return !$this->__errors->is_empty();
 	}
 
 	/* Store an arbitrary error message.
@@ -54,8 +58,10 @@ trait Errors
 	 * NOTE: This is to be overridden if anything else but error messages
 	 *       are to be stored.
 	 */
-	protected function error ($message)
+	protected function error ($error)
 	{
-		$this->errors->push($message);
+		if (!$this->__errors) { $this->__construct_errors(); }
+
+		$this->__errors->push($error);
 	}
 }

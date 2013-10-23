@@ -21,6 +21,12 @@ namespace Bacon\ORM;
 
 abstract class Model extends \Sauce\Object
 {
+	use BeforeAndAfter;
+
+	use \Bacon\Traits\Errors {
+		error as store_error;
+	}
+
 	protected $db;
 	protected static $table_name;
 	protected static $primary_key = 'id';
@@ -29,19 +35,18 @@ abstract class Model extends \Sauce\Object
 	protected static $created_at = 'created_at';
 	protected static $updated_at = 'updated_at';
 
-	/**
-	protected static $relations = [
-		# Name of the relation
-		'name' =>
-			[
-			# Modelname
-			'model'  => '\Namespace\ModelName',
-			# Columnname, defaults to relationname + _id
-			'column' => 'column_name'
-			# Relation type; either has_many or has_one
-			# Defaults to has_one
-			'type'   => 'has_one'
-			]];
+	/*
+	 * protected static $relations = [
+	 *   'name' => [ # Name of the relation
+	 *   	# Modelname
+	 *   	'model'  => '\Namespace\ModelName',
+	 *   	# Columnname, defaults to relationname + _id
+	 *   	'column' => 'column_name'
+	 *   	# Relation type; either has_many or has_one
+	 *   	# Defaults to has_one
+	 *   	'type'   => 'has_one'
+	 *   ]
+	 * ]];
 	*/
 	protected static $relations;
 	protected static $scopes;
@@ -54,140 +59,41 @@ abstract class Model extends \Sauce\Object
 
 	public static $per_page = 30;
 
+
+	/* Constructor for the Model. Gets an instance of \Bacon\Database,
+	 * initializes the error store and calls \Sauce\Object's constructor.
+	 *
+	 * $args is an array of values to set in a newly created model's column
+	 * values. $stored is a boolean indicating whether this object is already
+	 * stored in the database.
+	 *
+	 * Example: Update an object with an array of new values
+	 *
+	 *   $asset_data = [ 'id' => 10, 'hash' => '1234567890', 'name' => 'New name!' ]
+	 *
+	 *   # Update object in database
+	 *   $asset = new \Model\Asset($asset_data, true);
+	 *   $asset->save();
+	 *
+	 */
 	public function __construct($args = [], $stored = false)
 	{
 		$this->db = \Bacon\ORM\DatabaseSingleton::get_instance();
 
 		$this->stored = $stored;
 
+		$this->__construct_errors();
+
 		parent::__construct($args);
 	}
 
-	public function __set ($name, $value)
-	{
-		parent::__set($name, $value);
-
-		$this->updated = true;
-	}
-
-	public function __call ($method, $args)
-	{
-		$relations = A(static::$relations);
-
-		if ($relations->keys()->includes($method)) {
-			$model  = $relations[$method]['model'];
-			$column = isset($relations[$method]['column']) ? strtolower($relations[$method]['column']) : $method . '_id';
-			$type = isset($relations[$method]['type']) ? strtolower($relations[$method]['type']) : 'belongs_to';
-
-			if (!V([ 'belongs_to', 'has_one', 'has_many' ])->includes($type)) {
-				throw new \InvalidArgumentException("Given relation type is not valid: {$type}\nSupported types are: belongs_to, has_one and has_many");
-			}
-
-			switch ($type) {
-				case 'belongs_to':
-					return $model::find($this->$column);
-					break;
-
-				case 'has_one':
-					return $model::where([ $column => $this->id ])->first();
-					break;
-
-				case 'has_many':
-					return $model::where([ $column => $this->id ]);
-					break;
-			}
-		}
-
-		return parent::__call($method, $args);
-	}
-
-	public function save($options = [])
-	{
-		if ($this->stored
-			&& !$this->updated
-			//&& in_array(static::$primary_key, $this->keys(true))
-			&& $this[static::$primary_key]) {
-			// Nothing changed, not doing anything.
-			return true;
-		}
-
-		$this->before_save();
-		
-		$created_at = static::$created_at;
-		$updated_at = static::$updated_at;
-
-		// This came from the database, but needs to be updated!
-        if ($this->stored && $this->updated) {
-			$timestamps = static::$timestamps;
-
-			if (array_key_exists('timestamps', $options)) {
-				$timestamps = $options['timestamps'] ? true : false;
-			}
-
-            if ($timestamps) {
-                $this->$updated_at = \Sauce\DateTime::now();
-            }
-
-			if (!array_key_exists('skip_validation', $options) || $options['skip_validation'] !== true) {
-				$this->validate();
-			}
-
-			if (!$this->has_errors()) {
-				$result = $this->update();
-
-				$this->after_save();
-
-				return $result;
-			} else {
-				return false;
-			}
-		}
-
-		// Seems like this is a new entry, needs to be inserted.
-		if (static::$timestamps) {
-            $this->$created_at = \Sauce\DateTime::now();
-            $this->$updated_at = \Sauce\DateTime::now();
-		}
-
-		if (!array_key_exists('skip_validation', $options) || $options['skip_validation'] !== true) {
-			$this->validate();
-		}
-
-		if (!$this->has_errors()) {
-			$result = $this->create($options);
-
-			$this->after_save();
-
-			return $result;
-		} else {
-			return false;
-		}
-	}
-
-	public function delete ()
-	{
-		$this->before_delete();
-
-		$statement = 'DELETE FROM ' . static::$table_name;
-
-		$pk = $this->primary_key_condition();
-
-		$statement .= ' WHERE ' . $pk->statement;
-
-		$result = $this->db->query($statement, $pk->values->getArrayCopy());
-
-		$this->stored = true;
-		$this->updated = false;
-
-		$this->after_delete();
-
-		return true;
-	}
-
+	/* Fetch the item with given id from the database. */
 	public static function find($id)
 	{
 		return Collection::_where(get_called_class(), [ static::$primary_key => $id ])->first();
 	}
+
+	/* The following methods are proxies for the corresponding Collection methods. */
 
 	public static function all()
 	{
@@ -224,72 +130,89 @@ abstract class Model extends \Sauce\Object
 		return Collection::_limit(get_called_class(), $limit);
 	}
 
-	public static function __callStatic($name, $argument)
+	/* Save the object. This method is used for both, updated and newly created
+	 * objects. It finds out what to do based on its current internal state and
+	 * acts accordingly.
+	 *
+	 * The methods #before_save and #after_save are called during the process.
+	 * They can be overriden in models to build in some additional
+	 * functionality. (Like slug-generation or simple validations, e.g.)
+	 *
+	 * Possible options:
+	 * * timestamps:      boolean   overrides the model's timestamps settings
+	 * * skip_validation: boolean   do not call #validate
+	 */
+	public function save($options = [])
 	{
-		switch($name) {
-			case 'table_name':  return static::$table_name; break;
-			case 'primary_key': return static::$primary_key; break;
-			default: throw new \Bacon\Exceptions\MethodNotFound(); break;
+		if ($this->stored
+			&& !$this->updated
+			//&& in_array(static::$primary_key, $this->keys(true))
+			&& $this[static::$primary_key]) {
+
+			// Nothing changed, not doing anything.
+			return true;
 		}
-	}
 
-	public function errors ()
-	{
-		return V($this->stored_errors);
-	}
+		$this->before_save();
+		
+		$created_at = static::$created_at;
+		$updated_at = static::$updated_at;
 
-	public function has_errors ()
-	{
-		return $this->stored_errors && !$this->stored_errors->is_empty();
-	}
+		// This came from the database, but needs to be updated!
+		if ($this->stored && $this->updated) {
+			$timestamps = static::$timestamps;
 
-	protected function error ($column, $message)
-	{
-		if (!is_object($this->stored_errors)) {
-			$this->stored_errors = V();
-		}
-		$this->stored_errors->push(new \Bacon\Exceptions\ValidationError([ 'column' => $column, 'message' => $message ]));
-	}
+			if (array_key_exists('timestamps', $options)) {
+				$timestamps = $options['timestamps'] ? true : false;
+			}
 
-	protected function validate ()
-	{
+			if ($timestamps) {
+				$this->$updated_at = \Sauce\DateTime::now();
+			}
 
-	}
+			if (!array_key_exists('skip_validation', $options) || $options['skip_validation'] !== true) {
+				$this->validate();
+			}
 
-	private function update ()
-	{
-		$this->before_update();
+			if (!$this->has_errors()) {
+				$result = $this->update();
 
-		$statement = 'UPDATE ' . static::$table_name . ' SET ';
+				$this->after_save();
 
-		$sets = [];
-		$values = [];
-
-		foreach ($this->storage as $key => $value) {
-			if ($value !== null) {
-				$sets[] = $this->db->quote_column($key) . ' = ?';
-				$values[] = $value;
+				return $result;
+			} else {
+				return false;
 			}
 		}
 
-		$statement .= implode(', ', $sets);
+		// Seems like this is a new entry, needs to be inserted.
+		if (static::$timestamps) {
+			$this->$created_at = \Sauce\DateTime::now();
+			$this->$updated_at = \Sauce\DateTime::now();
+		}
 
-		$pk = $this->primary_key_condition();
+		if (!array_key_exists('skip_validation', $options) || $options['skip_validation'] !== true) {
+			$this->validate();
+		}
 
-		$statement .= ' WHERE ' . $pk->statement;
+		if (!$this->has_errors()) {
+			$result = $this->create($options);
 
-		$values = array_merge($values, $pk->values->getArrayCopy());
+			$this->after_save();
 
-		$result = $this->db->query($statement, $values);
-
-		$this->stored = true;
-		$this->updated = false;
-
-		$this->after_update();
-
-		return true;
+			return $result;
+		} else {
+			return false;
+		}
 	}
 
+	/* Stores this object in the database with all key-value pairs in
+	 * storage. 
+	 *
+	 * Called by #save
+	 *
+	 * Calls #before_create and #after_create.
+	 */
 	private function create($options = [])
 	{
 		$this->before_create();
@@ -334,6 +257,108 @@ abstract class Model extends \Sauce\Object
 		return true;
 	}
 
+	/* Update this object in the database with all key-value pairs in
+	 * storage (except the primary key).
+	 *
+	 * Called by #save.
+	 *
+	 * Calls #before_update and #after_update.
+	 */
+	private function update ()
+	{
+		$this->before_update();
+
+		$statement = 'UPDATE ' . static::$table_name . ' SET ';
+
+		$sets = [];
+		$values = [];
+
+		foreach ($this->storage as $key => $value) {
+			if ($value !== null) {
+				$sets[] = $this->db->quote_column($key) . ' = ?';
+				$values[] = $value;
+			}
+		}
+
+		$statement .= implode(', ', $sets);
+
+		$pk = $this->primary_key_condition();
+
+		$statement .= ' WHERE ' . $pk->statement;
+
+		$values = array_merge($values, $pk->values->getArrayCopy());
+
+		$result = $this->db->query($statement, $values);
+
+		$this->stored = true;
+		$this->updated = false;
+
+		$this->after_update();
+
+		return true;
+	}
+
+	/* Delete this object from the database.
+	 *
+	 * Calls #before_delete and #after_delete.
+	 */
+	public function delete ()
+	{
+		$this->before_delete();
+
+		$statement = 'DELETE FROM ' . static::$table_name;
+
+		$pk = $this->primary_key_condition();
+
+		$statement .= ' WHERE ' . $pk->statement;
+
+		$result = $this->db->query($statement, $pk->values->getArrayCopy());
+
+		$this->stored = true;
+		$this->updated = false;
+
+		$this->after_delete();
+
+		return true;
+	}
+
+	/* Overriding Object#__set so we can determine whether something was
+	 * updated. 
+	 */
+	public function __set ($name, $value)
+	{
+		parent::__set($name, $value);
+
+		$this->updated = true;
+	}
+
+	/* Using the __call method to handle relations between models. */
+	public function __call ($method, $args)
+	{
+		$result = handle_relations($method, $args)
+
+		if (null === $result) {
+			throw new \InvalidArgumentException("Given relation type is not valid: {$type}\nSupported types are: belongs_to, has_one and has_many");
+		}
+
+		return $result;
+	}
+
+	public static function __callStatic($name, $argument)
+	{
+		switch($name) {
+			case 'table_name':  return static::$table_name; break;
+			case 'primary_key': return static::$primary_key; break;
+			default: throw new \Bacon\Exceptions\MethodNotFound(); break;
+		}
+	}
+
+	protected function error ($column, $message)
+	{
+		$this->store_error(new \Bacon\Exceptions\ValidationError([ 'column' => $column, 'message' => $message ]));
+	}
+
+	/* Returns all keys as \Sauce\Vector except for the primary key! */
 	private function _keys($exclude_primary_key = false, $escape_keys = false)
 	{
 		$keys = [];
@@ -351,6 +376,42 @@ abstract class Model extends \Sauce\Object
 		return $keys;
 	}
 
+	/*
+	 * TODO: relations documentation!
+	 */
+	private function handle_relations ($method, $args)
+	{
+		$relations = A(static::$relations);
+
+		if (!$relations->keys()->includes($method)) {
+			return parent::__call($method, $args);
+		}
+
+		$model  = $relations[$method]['model'];
+		$column = isset($relations[$method]['column']) ? strtolower($relations[$method]['column']) : $method . '_id';
+		$type = isset($relations[$method]['type']) ? strtolower($relations[$method]['type']) : 'belongs_to';
+
+		if (!V([ 'belongs_to', 'has_one', 'has_many' ])->includes($type)) {
+		}
+
+		switch ($type) {
+			case 'belongs_to':
+				return $model::find($this->$column);
+				break;
+
+			case 'has_one':
+				return $model::where([ $column => $this->id ])->first();
+				break;
+
+			case 'has_many':
+				return $model::where([ $column => $this->id ]);
+				break;
+
+			default: return null;
+		}
+	}
+
+	/* Returns all values as \Sauce\Vector except for the primary key! */
 	private function _values($exclude_primary_key = true)
 	{
 		$values = [];
@@ -365,36 +426,29 @@ abstract class Model extends \Sauce\Object
 		return $values;
 	}
 
-    private function primary_key_condition () {
-        $statement = '';
-        $values = V();
+	/* Returns a condition string (WHERE <conditions...>) for the primary
+	 * key(s) depending on how it is/they are defined in static::$primary_key.
+	 */
+	private function primary_key_condition () {
+		$statement = '';
+		$values = V();
 
-        if (is_array(static::$primary_key)) {
-            $primary_keys_statement = [];
+		if (is_array(static::$primary_key)) {
+			$primary_keys_statement = [];
 
-            foreach (static::$primary_key as $key) {
-                 array_push($primary_keys_statement, $key . ' = ?');
-                 $values->push($this[$key]);
-            }
+			foreach (static::$primary_key as $key) {
+				array_push($primary_keys_statement, $key . ' = ?');
+				$values->push($this[$key]);
+			}
 
-            $statement .= implode(' AND ', $primary_keys_statement);
-        } else {
-            $statement .= static::$primary_key . ' = ?';
-            $values->push($this[static::$primary_key]);
-        }
+			$statement .= implode(' AND ', $primary_keys_statement);
+		} else {
+			$statement .= static::$primary_key . ' = ?';
+			$values->push($this[static::$primary_key]);
+		}
 
-        return A([ 'statement' => $statement, 'values' => $values ]);
-    }
-
-    protected function before_save () {}
-    protected function before_create () {}
-    protected function before_update () {}
-    protected function before_delete () {}
-
-    protected function after_save () {}
-    protected function after_create () {}
-    protected function after_update () {}
-    protected function after_delete () {}
+		return A([ 'statement' => $statement, 'values' => $values ]);
+	}
 }
 
 ?>
