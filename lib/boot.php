@@ -56,10 +56,11 @@ $params = Ar($_REQUEST);
 $env = Ar($_ENV);
 $env->mergeF($_SERVER);
 
-# PHP's builtin webserver doesn't know FallbackResource. So we have to do it on our
-# own in this case.
-#
-# Check whether given URI maps to a file or is to be handled by us.
+/* PHP's builtin webserver doesn't know FallbackResource. So we have to do it on our
+ * own in this case.
+ *
+ * Check whether given URI maps to a file or is to be handled by us.
+ */
 if (is_cli_server()) {
 	$path = $params->request_uri;
 
@@ -67,7 +68,7 @@ if (is_cli_server()) {
 		$path = $env->request_uri;
 	}
 
-	# Remove any GET parameters (<uri>?foo=bar) if present
+	/* Remove any GET parameters (<uri>?foo=bar) if present. */
 	$question_mark = strpos($path, '?');
 
 	if ($question_mark !== false) {
@@ -79,23 +80,23 @@ if (is_cli_server()) {
 	}
 }
 
-# PHP forms the $_FILES array in the following way:
-# $_FILES => {
-# 	name => [ file1, file2, file3, ... ],
-# 	size => [ .... ],
-# 	...
-#
-# So we just transform it to:
-#
-# $files (\Sauce\Vector) => [
-# 	{
-# 		name => file1,
-# 		size => 1234,
-# 		...
-# 	},
-# 	{ ... }
-# ]
-#
+/* PHP forms the $_FILES array in the following way:
+ * $_FILES => {
+ * 	name => [ file1, file2, file3, ... ],
+ * 	size => [ .... ],
+ * 	...
+ *
+ * So we just transform it to:
+ *
+ * $files (\Sauce\Vector) => [
+ * 	{
+ * 		name => file1,
+ * 		size => 1234,
+ * 		...
+ * 	},
+ * 	{ ... }
+ * ]
+ */
 if (!empty($_FILES)) {
 	$files = new \Sauce\Vector();
 
