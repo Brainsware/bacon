@@ -54,13 +54,17 @@ class Router
 			$current = $splitted_uri[$i];
 			$next    = $i + 1 < $count ? $splitted_uri[$i + 1] : '';
 
-			$path = \Sauce\Path::join(APP_ROOT, 'Controllers', $this->route, ucfirst($current));
+			$namespace = '\\Controllers\\'
+				. (empty($this->route->to_array()) ? '' : implode('\\', $this->route->to_array()) . '\\')
+				. ucfirst($current);
 
-			if (is_dir($path) && is_file(\Sauce\Path::join($path->to_s(), ucfirst($next) . '.php'))) {
+			$namespace_next = $namespace . '\\' . ucfirst($next);
+
+			if (class_exists($namespace_next)) {
 				// Current part is a namespace
 				$this->route->push(ucfirst($current));
 
-			} elseif (is_file($path . '.php')) {
+			} elseif (class_exists($namespace)) {
 				// Current part is a resource
 				$this->route->push(ucfirst($current));
 
