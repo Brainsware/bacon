@@ -110,9 +110,9 @@ abstract class Model extends \Sauce\Object
 		return Collection::_where(get_called_class(), $args);
 	}
 
-	public static function joins($args = [])
+	public static function join($args = [])
 	{
-		return Collection::_joins(get_called_class(), $args);
+		return Collection::_join(get_called_class(), $args);
 	}
 
 	public static function order($by, $direction = 'ASC')

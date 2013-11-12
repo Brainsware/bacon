@@ -32,7 +32,7 @@ class Collection extends \ArrayObject
 	protected $group_scope;
 	protected $limit_scope;
 	protected $offset_scope;
-	protected $joins_scope;
+	protected $join_scope;
 
 	protected $loaded = false;
 
@@ -164,9 +164,17 @@ class Collection extends \ArrayObject
 		return $this;
 	}
 
-	public function joins(array $args = [])
+	public function join($args = [])
 	{
-		$this->joins_scope = array_merge($this->joins_scope, $args);
+		if (empty($this->join_scope)) {
+			$this->join_scope = [];
+		}
+
+		if (is_string($args)) {
+			$args = [ $args ];
+		}
+
+		$this->join_scope = array_merge($this->join_scope, $args);
 
 		return $this;
 	}
@@ -226,6 +234,7 @@ class Collection extends \ArrayObject
 		switch ($name) {
 			case '_columns': return $collection->columns($arguments[1]);
 			case '_where':   return $collection->where($arguments[1]);
+			case '_join':    return $collection->join($arguments[1]);
 			case '_order':   return $collection->order($arguments[1], $arguments[2]);
 			case '_group':   return $collection->group($arguments[1]);
 			case '_limit':   return $collection->limit($arguments[1]);
@@ -270,8 +279,12 @@ class Collection extends \ArrayObject
 
 		$statement .= ' FROM ' . $this->table_name;
 
+		$jc = $this->join_conditions();
+		$statement .= $jc->statement;
+
 		$wc = $this->where_conditions();
 		$statement .= $wc->statement;
+
 		$values = array_merge($values, $wc->values->to_array());
 
 		if (!empty($this->group_scope)) {
@@ -327,7 +340,7 @@ class Collection extends \ArrayObject
 			foreach ($this->where_scope as $column_name => $condition) {
 				if (is_an_array($condition)) {
 					// array('id' => array(1, 2, 3)) => 'id IN (1, 2, 3)'
-					$conditions->push($this->table_name . '.' . $column_name . ' IN (' . str_repeat('?,', count($condition) - 1) . '?)');
+					$conditions->push($column_name . ' IN (' . str_repeat('?,', count($condition) - 1) . '?)');
 
 					$values->push($condition);
 
@@ -337,10 +350,10 @@ class Collection extends \ArrayObject
 
 				} else {
 					if ($condition === null) {
-						$c = $this->table_name . '.' . $column_name . ' IS NULL';
+						$c = $column_name . ' IS NULL';
 
 					} else {
-						$c = $this->table_name . '.' . $column_name . ' = ?';
+						$c = $column_name . ' = ?';
 
 						$values->push($condition);
 					}
@@ -350,6 +363,46 @@ class Collection extends \ArrayObject
 			}
 
 			$statement .= $conditions->join(' AND ');
+		}
+
+		return A([ 'statement' => $statement, 'values' => $values ]);
+	}
+
+	private function join_conditions ()
+	{
+		$statement = ' ';
+		$values = V();
+
+		if (!empty($this->join_scope)) {
+			foreach ($this->join_scope as $table_name => $condition) {
+				$statement .= ' ' . $condition . ' ';
+				continue;
+
+				# XXX TODO: other cases than join strings
+
+				if (is_an_array($condition)) {
+					// array('id' => array(1, 2, 3)) => 'id IN (1, 2, 3)'
+					$conditions->push($column_name . ' IN (' . str_repeat('?,', count($condition) - 1) . '?)');
+
+					$values->push($condition);
+
+				} elseif (!$table_name) {
+					// String condition, for clauses that cover more complex conditions than simple ANDs.
+					$statement .= ' ' . $condition . ' ';
+
+				} else {
+					if ($condition === null) {
+						$c = $column_name . ' IS NULL';
+
+					} else {
+						$c = $column_name . ' = ?';
+
+						$values->push($condition);
+					}
+
+					$conditions->push($c);
+				}
+			}
 		}
 
 		return A([ 'statement' => $statement, 'values' => $values ]);

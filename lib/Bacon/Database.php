@@ -67,6 +67,8 @@ class Database extends \PDO
 
 		} catch (\PDOException $e) {
 			$this->log->error("Error during query preparation: {$e->getMessage()}\nQuery: {$query}");
+
+			throw $e;
 		}
 
 		$this->log->info("Executing query:\n{$query}\nwith values:\n" . var_export($values, true));
