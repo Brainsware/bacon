@@ -29,7 +29,7 @@ namespace Bacon\Traits;
 trait Errors
 {
 	/* Internal storage object */
-	protected $errors;
+	protected $__errors;
 
 	/* Initializes a new error store. */
 	protected function __construct_errors ()
