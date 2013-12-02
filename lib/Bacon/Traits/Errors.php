@@ -17,7 +17,7 @@
 
 */
 
-namespace Bacon\Traits\Errors;
+namespace Bacon\Traits;
 
 /* A trait to throw error messages on and collect them in a \Sauce\Vector.
  * 
