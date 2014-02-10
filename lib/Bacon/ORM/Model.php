@@ -335,7 +335,7 @@ abstract class Model extends \Sauce\Object
 	/* Using the __call method to handle relations between models. */
 	public function __call ($method, $args)
 	{
-		$result = handle_relations($method, $args);
+		$result = $this->handle_relations($method, $args);
 
 		if (null === $result) {
 			throw new \InvalidArgumentException("Given relation type is not valid: {$type}\nSupported types are: belongs_to, has_one and has_many");
