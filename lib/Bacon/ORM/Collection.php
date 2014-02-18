@@ -179,7 +179,7 @@ class Collection extends \ArrayObject
 		return $this;
 	}
 
-	public function order($by, $direction)
+	public function order($by, $direction = 'ASC')
 	{
 		if (empty($this->order_scope)) {
 			$this->order_scope = [];
