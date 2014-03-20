@@ -85,7 +85,7 @@ class Collection extends \ArrayObject
 		if ($result) {
 			return $result;
 		} elseif ($throw) {
-			throw new \PDOException(get_class($this) . ' not found (' . implode($this->where_scope, ', ') . ')');
+			throw new \PDOException(get_class($this) . ' "' . $this->table_name . '" not found (' . implode($this->where_scope, ', ') . ')');
 		}
 
 		return null;
