@@ -71,8 +71,9 @@ class Router
 				if (empty($next)) {
 					// No next part -> call current#index or #create
 					switch ($this->http_method) {
-						case 'get':  $this->action = 'index';   break;
-						case 'post': $this->action = 'create';  break;
+						case 'get':      $this->action = 'index';   break;
+						case 'post':     $this->action = 'create';  break;
+						case 'destroy' : $this->action = 'destroy'; break;
 					}
 
 				} elseif ($next == 'new') {
