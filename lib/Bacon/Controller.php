@@ -106,6 +106,10 @@ abstract class Controller
 			if (!is_a($result, '\Bacon\Presenter')) {
 				$action_name = $options->action == 'new' ? '_new' : $options->action;
 
+				if (empty($action_name)) {
+					$this->log->error('No action set.');
+				}
+
 				$result = $this->$action_name();
 			}
 
