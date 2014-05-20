@@ -104,6 +104,7 @@ class Router
 						switch($this->http_method) {
 							case 'get':  $this->action = 'index';  break;
 							case 'post': $this->action = 'create'; break;
+							case 'delete': $this->action = 'destroy'; break;
 						}
 
 						return;
