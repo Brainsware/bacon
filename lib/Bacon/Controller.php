@@ -135,6 +135,11 @@ abstract class Controller
 		return new \Bacon\Presenter\Json($data, $this->params);
 	}
 
+	public function jsonp ($data, $callback)
+	{
+		return new \Bacon\Presenter\Jsonp($data, $this->params, $callback);
+	}
+
 	public function http_status ($code)
 	{
 		return new \Bacon\Presenter\Http($code, $this->params);
