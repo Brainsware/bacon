@@ -389,17 +389,21 @@ abstract class Model extends \Sauce\Object
 
 		$model  = $relations[$method]['model'];
 		$column = isset($relations[$method]['column']) ? strtolower($relations[$method]['column']) : $method . '_id';
-		$type = isset($relations[$method]['type']) ? strtolower($relations[$method]['type']) : 'belongs_to';
+		$type = isset($relations[$method]['type']) ? strtolower($relations[$method]['type']) : 'has_one';
 
 		if (!V([ 'belongs_to', 'has_one', 'has_many' ])->includes($type)) {
 		}
 
 		switch ($type) {
-			case 'belongs_to':
-				return $model::find($this->$column);
+			case 'has_one':
+				if (!empty($this->$column)) {
+					return $model::find($this->$column);
+				} else {
+					return new $model;
+				}
 				break;
 
-			case 'has_one':
+			case 'belongs_to':
 				return $model::where([ $column => $this->id ])->first();
 				break;
 
