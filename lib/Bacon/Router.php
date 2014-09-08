@@ -71,9 +71,11 @@ class Router
 				if (empty($next)) {
 					// No next part -> call current#index or #create
 					switch ($this->http_method) {
-						case 'get':      $this->action = 'index';   break;
-						case 'post':     $this->action = 'create';  break;
-						case 'destroy' : $this->action = 'destroy'; break;
+						case 'get':     $this->action = 'index';   break;
+						case 'put':     $this->action = 'update';  break;
+						case 'post':    $this->action = 'create';  break;
+						case 'delete':
+						case 'destroy': $this->action = 'destroy'; break;
 					}
 
 				} elseif ($next == 'new') {
@@ -102,9 +104,11 @@ class Router
 						$this->route->push(ucfirst($splitted_uri[$i + 2]));
 
 						switch($this->http_method) {
-							case 'get':  $this->action = 'index';  break;
-							case 'post': $this->action = 'create'; break;
-							case 'delete': $this->action = 'destroy'; break;
+							case 'get':    $this->action = 'index';  break;
+							case 'put':    $this->action = 'update';  break;
+							case 'post':   $this->action = 'create'; break;
+							case 'delete':
+							case 'destroy': $this->action = 'destroy'; break;
 						}
 
 						return;
