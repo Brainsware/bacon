@@ -33,8 +33,13 @@ class DatabaseSingleton
 		if (!static::$instance) {
 			static::$instance = new \Bacon\Database(static::$log, \Config\Database::$main);
 		}
-			
+
 		return static::$instance;
+	}
+
+	public static function reset_instance ()
+	{
+		static::$instance = null;
 	}
 
 	public static function set_logger ($log)
