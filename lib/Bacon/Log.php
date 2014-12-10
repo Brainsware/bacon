@@ -31,6 +31,7 @@ class Log
 	const SYSLOG     = 0; // Log by writing to syslog
 	const FILESYSTEM = 1; // Log by writing into a file
 	const STDERR     = 2; // Log using error_log
+	const STDOUT     = 3; // Log using echo
 
 	const ERROR   = 0;
 	const WARNING = 1;
@@ -114,17 +115,21 @@ class Log
 		$caller = self::caller();
 		$level = strtoupper($this->levels->keys()[$level]);
 
-		$str = sprintf("[%s %s#%s] %s", $level, $caller->class, $caller->method, $message);
+		$str = sprintf("%s [%s %s#%s] %s", date(DATE_ATOM), $level, $caller->class, $caller->method, $message);
 
 		switch ($this->driver) {
 			case self::SYSLOG:
-				syslog($this->levels[strtolower($level)], sprintf("%s %s", date(DATE_ATOM), $str));
+				syslog($this->levels[strtolower($level)], sprintf("%s", $str));
 				break;
 
 			case self::FILESYSTEM:
 				if (!is_resource($this->file)) { $this->open(); }
 
 				fwrite($this->file, sprintf("%s\n", $str));
+				break;
+
+			case self::STDOUT:
+				echo($str);
 				break;
 
 			default:
