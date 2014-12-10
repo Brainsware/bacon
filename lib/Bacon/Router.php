@@ -70,13 +70,7 @@ class Router
 
 				if (empty($next)) {
 					// No next part -> call current#index or #create
-					switch ($this->http_method) {
-						case 'get':     $this->action = 'index';   break;
-						case 'put':     $this->action = 'update';  break;
-						case 'post':    $this->action = 'create';  break;
-						case 'delete':
-						case 'destroy': $this->action = 'destroy'; break;
-					}
+					$this->set_action();
 
 				} elseif ($next == 'new') {
 					// Next part is new -> call current#new
@@ -103,13 +97,7 @@ class Router
 
 						$this->route->push(ucfirst($splitted_uri[$i + 2]));
 
-						switch($this->http_method) {
-							case 'get':    $this->action = 'index';  break;
-							case 'put':    $this->action = 'update';  break;
-							case 'post':   $this->action = 'create'; break;
-							case 'delete':
-							case 'destroy': $this->action = 'destroy'; break;
-						}
+						$this->set_action();
 
 						return;
 
@@ -125,17 +113,24 @@ class Router
 
 					$this->params->id = $next;
 
-					switch ($this->http_method) {
-						case 'get':    $this->action = 'show';    break;
-						case 'put':    $this->action = 'update';  break;
-						case 'delete': $this->action = 'destroy'; break;
-					}
+					$this->set_action(true);
 
 					return;
 				}
 			} else {
 				throw new Exceptions\RouterException('No route given.');
 			}
+		}
+	}
+
+	private function set_action ($show = false)
+	{
+		switch ($this->http_method) {
+			case 'get':    $this->action = $show ? 'show' : 'index';  break;
+			case 'put':    $this->action = 'update';  break;
+			case 'post':   $this->action = 'create'; break;
+			case 'delete':
+			case 'destroy': $this->action = 'destroy'; break;
 		}
 	}
 
