@@ -34,6 +34,7 @@ abstract class Model extends \Sauce\Object
 	protected static $timestamps = true;
 	protected static $created_at = 'created_at';
 	protected static $updated_at = 'updated_at';
+	protected static $sortable   = null;
 
 	/*
 	 * protected static $relations = [
@@ -49,6 +50,8 @@ abstract class Model extends \Sauce\Object
 	 * ]];
 	*/
 	protected static $relations;
+	protected static $belongs_to;
+
 	protected static $scopes;
 
 	protected $stored_errors;
@@ -320,6 +323,52 @@ abstract class Model extends \Sauce\Object
 		$this->after_delete();
 
 		return true;
+	}
+
+	public function move ($new)
+	{
+		if (empty(static::$sortable) || $new === null) {
+			return false;
+		}
+
+		$sort = static::$sortable;
+		$values = [];
+
+		if (!empty(static::$belongs_to)) {
+			$fk_ids = [];
+
+			$fk_query = '';
+
+			foreach (static::$belongs_to as $fk) {
+				$fk_query .= ' ' . $fk['column'] . ' = ?';
+				$fk_column = $fk['column'];
+
+				$values[] = $this->$fk_column;
+			}
+		}
+
+		if ($new > $this->$sort) {
+			$values[] = $this->$sort;
+			$values[] = $new;
+
+			$this->db->query(
+				'UPDATE ' . static::$table_name . '
+				SET ' . $sort . ' = ' . $sort . ' - 1 WHERE ' . $fk_query . ' AND ' . $sort . ' > ? AND ' . static::$sortable . ' <= ?',
+				$values
+			);
+		} else {
+			$values[] = $new;
+			$values[] = $this->$sort;
+
+			$this->db->query(
+				'UPDATE ' . static::$table_name . '
+				SET ' . $sort . ' = ' . $sort . ' + 1 WHERE ' . $fk_query . ' AND ' . $sort . ' >= ? AND ' . $sort . ' < ?',
+				$values
+			);
+		}
+
+		$this->$sort = $new;
+		$this->save();
 	}
 
 	/* Overriding Object#__set so we can determine whether something was
