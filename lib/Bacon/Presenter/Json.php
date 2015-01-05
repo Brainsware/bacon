@@ -32,6 +32,12 @@ class Json extends \Bacon\Presenter
 		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 		header('Content-Type: text/plain');
 
+		if ($this->data instanceof \ArrayObject) {
+			$this->data = $this->data->getArrayCopy();
+		} elseif (empty($this->data)) {
+			$this->data = [];
+		}
+
 		echo json_encode($this->data);
 		exit;
 	}
