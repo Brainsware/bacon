@@ -5,7 +5,7 @@ The bacon PHP framework is a lean, clean, simple and fast MVC framework without 
 
 Server Requirements:
 * A webserver
-* PHP 5.4.0 or greater ([php.net](http://php.net/))
+* PHP 5.5.0 or greater ([php.net](http://php.net/))
 * Composer ([getcomposer.org](http://getcomposer.org/))
 
 # Installation:
