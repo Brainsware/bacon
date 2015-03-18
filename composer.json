@@ -13,8 +13,7 @@
 
 	"support": {
 		"source": "https://github.com/Brainsware/bacon",
-		"issues": "https://github.com/Brainsware/bacon/issues",
-		"forum":  "http://baconphp.net/forum"
+		"issues": "https://github.com/Brainsware/bacon/issues"
 	},
 
 	"require": {
@@ -29,5 +28,5 @@
 
 	"autoload": { "psr-0": { "Bacon": "lib/" } },
 
-	"bin" : [ "bin/server", "bin/coffee-compile" ]
+	"bin" : [ "bin/server" ]
 }
