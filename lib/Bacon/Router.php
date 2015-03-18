@@ -60,6 +60,17 @@ class Router
 
 			$namespace_next = $namespace . '\\' . ucfirst($next);
 
+			if (in_array('Bacon\Controllers\Endpoint', class_implements($namespace))) {
+				$this->route->push(ucfirst($current));
+				$this->set_action();
+
+				if (!empty($next)) {
+					$this->params->id = $next;
+				}
+
+				return;
+			}
+
 			if (class_exists($namespace_next)) {
 				// Current part is a namespace
 				$this->route->push(ucfirst($current));
