@@ -222,7 +222,7 @@ class Collection extends \ArrayObject
 
 		if($per_page === null) { $per_page = $model::$per_page; }
 
-		$this->offset($page * $model::$per_page)->limit($model::$per_page);
+		$this->offset($page * $per_page)->limit($per_page);
 
 		return $this;
 	}
