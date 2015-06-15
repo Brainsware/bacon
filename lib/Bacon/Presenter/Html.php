@@ -65,6 +65,8 @@ class Html extends \Bacon\Presenter
 			}
 		}
 
+		$twig->addExtension(new \Twig_Extensions_Extension_I18n());
+
 		echo $twig->render($template_path, $this->context->getArrayCopy());
 	}
 }
