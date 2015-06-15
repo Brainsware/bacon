@@ -26,10 +26,9 @@ class Api extends \Bacon\Controller
 	protected $model = '';
 	protected $per_page = 100;
 
-	protected $allowed_fields = [
-	];
-
-	protected $sortable = null;
+	protected $allowed_fields = [];
+	protected $sortable       = null;
+	protected $belongs_to     = null;
 	
 	public function init ()
 	{
@@ -92,9 +91,14 @@ class Api extends \Bacon\Controller
 		}
 
 		$model = $this->model;
+		$model = $model::where($where);
+
+		if (!empty($this->join)) {
+			$model = $model->join($join);
+		}
 
 		return $this->json(
-				$model::where($where)
+				$model
 			    	->order($options->order_by, $options->order)
 					->page($options->page, $options->per_page)->all()
 			);
