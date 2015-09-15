@@ -19,6 +19,10 @@
 
 namespace Bacon\Presenter;
 
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\Loader\PoFileLoader;
+
 class Html extends \Bacon\Presenter
 {
 	public function __construct ($data, $context)
@@ -65,7 +69,11 @@ class Html extends \Bacon\Presenter
 			}
 		}
 
-		$twig->addExtension(new \Twig_Extensions_Extension_I18n());
+		$translator = new Translator('de_AT', new MessageSelector());
+		$translator->addLoader('po', new PoFileLoader());
+		$translator->addResource('po', APP_ROOT . '/locales/de_AT/accounting.po', 'de_AT');
+
+		$twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension($translator));
 
 		echo $twig->render($template_path, $this->context->getArrayCopy());
 	}

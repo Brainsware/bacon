@@ -74,13 +74,15 @@ abstract class Controller
 {
 	public $session;
 	public $log;
+	public $auth;
 
 	private $context;
 
-	public function __construct ($session, $log)
+	public function __construct ($session, $log, $auth)
 	{
 		$this->session = $session;
 		$this->log     = $log;
+		$this->auth    = $auth;
 
 		$this->context = A([]);
 	}

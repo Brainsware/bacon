@@ -35,6 +35,7 @@ class App
 {
 	public $log;
 	public $session;
+	public $authcookie;
 	public $controller;
 
 	protected $params;
@@ -44,14 +45,15 @@ class App
 
 	private $controller_name;
 
-	public function __construct($config, $session, $log, $params, $environment)
+	public function __construct($config, $session, $log, $params, $environment, $authcookie)
 	{
 		$this->config = $config;
 		$this->params = $params;
 		$this->environment = $environment;
 
-		$this->log     = $log;
-		$this->session = $session;
+		$this->log        = $log;
+		$this->session    = $session;
+		$this->authcookie = $authcookie;
 
 		if (empty($this->config->root_controller)) {
 			throw new Exceptions\RouterException('No root controller defined in Config\Base');
@@ -140,7 +142,7 @@ class App
 	{
 		$name = $this->controller_name;
 
-		$this->controller = new $name($this->session, $this->log);
+		$this->controller = new $name($this->session, $this->log, $this->authcookie);
 
 		$options = A([
 			'action'      => $this->router->action,

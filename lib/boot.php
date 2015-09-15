@@ -51,6 +51,13 @@ if (is_cli()) {
 	$session = new \Bacon\Session($config->session, $log);
 }
 
+$authcookie = new \Sauce\Object();
+
+if (!empty(\Config\Base::$auth)) {
+	$config->auth = \Config\Base::$auth;
+	$authcookie = new \Bacon\AuthCookie($config->auth, $log);
+}
+
 $params = Ar($_REQUEST);
 $env = Ar($_ENV);
 $env->mergeF($_SERVER);
@@ -125,7 +132,7 @@ if (!empty($_FILES)) {
 	$params->files = $files;
 }
 
-$app = new \Bacon\App($config->app, $session, $log, $params, $env);
+$app = new \Bacon\App($config->app, $session, $log, $params, $env, $authcookie);
 
 $app->prepare(path_info(), http_method());
 $app->run();
