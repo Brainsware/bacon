@@ -67,6 +67,9 @@ class AuthCookie
 
 	public function read ()
 	{
+		if (empty($_COOKIE['auth'])) {
+			return false;
+		}
 		try {
 			$cookie = Crypto::Decrypt($_COOKIE['auth'], $this->key);
 
