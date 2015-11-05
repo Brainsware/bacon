@@ -26,9 +26,13 @@ class Api extends \Bacon\Controller
 	protected $model = '';
 	protected $per_page = 100;
 
-	protected $allowed_fields = [];
-	protected $sortable       = null;
-	protected $belongs_to     = null;
+	protected $allowed_fields  = [];
+	protected $readable_fields = [];
+
+	protected $search_fields   = [];
+
+	protected $sortable        = null;
+	protected $belongs_to      = null;
 	
 	public function init ()
 	{
@@ -82,8 +86,12 @@ class Api extends \Bacon\Controller
 
 		$where = [];
 
-		if (!empty($this->params->status)) {
-			$where['status'] = $this->params->status;
+		if (!empty($this->readable_fields)) {
+			foreach ($this->readable_fields as $field) {
+				if (!empty($this->params[$field])) {
+					$where[$field] = $this->params[$field];
+				}
+			}
 		}
 
 		if (!empty($this->belongs_to)) {
@@ -95,6 +103,10 @@ class Api extends \Bacon\Controller
 
 		if (!empty($this->join)) {
 			$model = $model->join($join);
+		}
+
+		if (!empty($this->readable_fields)) {
+			$model = $model->columns($this->readable_fields);
 		}
 
 		return $this->json(
@@ -109,7 +121,11 @@ class Api extends \Bacon\Controller
 		$model = $this->model;
 
 		try {
-			$data = $model::find($this->params->id);
+			if (!empty($this->readable_fields)) {
+				$data = $model::columns($this->readable_fields)->where(['id' => $this->params->id])->first();
+			} else {
+				$data = $model->find($this->params->id);
+			}
 
 			return $this->json($data);
 
