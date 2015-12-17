@@ -34,15 +34,11 @@ class Api extends \Bacon\Controller
 	protected $sortable        = null;
 	protected $belongs_to      = null;
 	
+	/**
+	Returns Bacon\Presenter
+	*/
 	public function init ()
 	{
-		/* Check whether given request is from within /backend.
-		 * Deny (send 404) for all non-GET requests outside of /backend. */
-		if ($this->environment->request_method !== 'GET' &&
-			!$this->check_key()) {
-
-			return $this->http_status(403);
-		}
 
 		if (!empty($this->belongs_to)) {
 			try {
@@ -55,11 +51,6 @@ class Api extends \Bacon\Controller
 		}
 
 		return parent::init();
-	}
-
-	protected function check_key ()
-	{
-		return true;
 	}
 
 	protected function referer_uri ()
