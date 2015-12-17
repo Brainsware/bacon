@@ -89,19 +89,19 @@ class Api extends \Bacon\Controller
 			$where[$this->belongs_to['key']] = $this->parent_model->id;
 		}
 
-		$model = $this->model;
-		$model = $model::where($where);
+		$model_class = $this->model;
+		$model_object = $model_class::where($where);
 
 		if (!empty($this->join)) {
-			$model = $model->join($join);
+			$model_object = $model_object->join($join);
 		}
 
 		if (!empty($this->readable_fields)) {
-			$model = $model->columns($this->readable_fields);
+			$model_object = $model_object->columns($this->readable_fields);
 		}
 
 		return $this->json(
-				$model
+				$model_object
 			    	->order($options->order_by, $options->order)
 					->page($options->page, $options->per_page)->all()
 			);
@@ -109,13 +109,13 @@ class Api extends \Bacon\Controller
 
 	public function show ()
 	{
-		$model = $this->model;
+		$model_class = $this->model;
 
 		try {
 			if (!empty($this->readable_fields)) {
-				$data = $model::columns($this->readable_fields)->where(['id' => $this->params->id])->first();
+				$data = $model_class::columns($this->readable_fields)->where(['id' => $this->params->id])->first();
 			} else {
-				$data = $model->find($this->params->id);
+				$data = $model_class->find($this->params->id);
 			}
 
 			return $this->json($data);
@@ -129,7 +129,7 @@ class Api extends \Bacon\Controller
 
 	public function create ()
 	{
-		$model = $this->model;
+		$model_class = $this->model;
 
 		try {
 			$data = new $model();
@@ -147,7 +147,7 @@ class Api extends \Bacon\Controller
 
 			$data->save();
 
-			$data = $model::find($data->id);
+			$data = $model_class::find($data->id);
 		} catch (\PDOException $e) {
 			$this->log->warning($e->getMessage());
 
@@ -159,10 +159,10 @@ class Api extends \Bacon\Controller
 
 	public function update ()
 	{
-		$model = $this->model;
+		$model_class = $this->model;
 
 		try {
-			$this->data = $model::find($this->params->id);
+			$this->data = $model_class::find($this->params->id);
 		} catch (\PDOException $e) {
 			$this->log->warning($e->getMessage());
 
@@ -192,10 +192,10 @@ class Api extends \Bacon\Controller
 
 	public function destroy ()
 	{
-		$model = $this->model;
+		$model_class = $this->model;
 
 		try {
-			$this->data = $model::find($this->params->id);
+			$this->data = $model_class::find($this->params->id);
 
 			$this->data->delete();
 		} catch (\PDOException $e) {
