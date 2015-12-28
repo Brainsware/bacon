@@ -69,11 +69,15 @@ class Html extends \Bacon\Presenter
 			}
 		}
 
-		$translator = new Translator('de_AT', new MessageSelector());
-		$translator->addLoader('po', new PoFileLoader());
-		$translator->addResource('po', APP_ROOT . '/locales/de_AT/accounting.po', 'de_AT');
+		if (!empty($this->context->locale)) {
+			$locale = $this->context->locale;
 
-		$twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension($translator));
+			$translator = new Translator($locale, new MessageSelector());
+			$translator->addLoader('po', new PoFileLoader());
+			$translator->addResource('po', APP_ROOT . '/locales/' . $locale . '/accounting.po', $locale);
+
+			$twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension($translator));
+		}
 
 		echo $twig->render($template_path, $this->context->getArrayCopy());
 	}
