@@ -132,7 +132,7 @@ class Api extends \Bacon\Controller
 		$model_class = $this->model;
 
 		try {
-			$data = new $model();
+			$data = new $model_class();
 
 			foreach ($this->allowed_fields as $field) {
 				if ($this->params->has_key($field)) {
