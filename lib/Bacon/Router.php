@@ -60,7 +60,9 @@ class Router
 
 			$namespace_next = $namespace . '\\' . ucfirst($next);
 
-			if (in_array('Bacon\Controllers\Endpoint', class_implements($namespace))) {
+			$endpoint_check = class_implements($namespace);
+
+			if ($endpoint_check != false && in_array('Bacon\Controllers\Endpoint', $endpoint_check)) {
 				$this->route->push(ucfirst($current));
 				$this->set_action();
 
