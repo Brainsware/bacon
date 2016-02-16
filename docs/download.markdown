@@ -26,7 +26,7 @@ If you however want to add Bacon as a dependency to your existing project, you n
 }
 ```
 
-This will declare the newest version of Bacon as your dependency and adds all the classes to your autoloader as well.
+This will declare the newest version of Bacon as your dependency and add all the classes to your autoloader as well.
 
 ## Development Checkout {#checkout}
 
