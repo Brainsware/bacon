@@ -1,6 +1,6 @@
 # Documentation
 
-These articles try to give a thorough overview on how to use Bacon and explains what is and what is not possible with each part.
+These articles try to give a thorough overview on how to use Bacon and explain what is and what is not possible with each part.
 
 * [Getting Started](/articles/getting-started)
 * [ORM: Models and Collections](/articles/orm)
