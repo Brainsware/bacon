@@ -2,7 +2,7 @@
 
 ## Versioning {#versioning}
 
-Bacon, Sauce and the `bacon-dist` package are available as development versions (`@dev` or `dev-master`), as well as stable versions (currently `0.1.*`). All packages are versioned according to the [Semantiv Versioning Specification (SemVer)](http://semver.org/).
+Bacon, Sauce and the `bacon-dist` package are available as development versions (`@dev` or `dev-master`), as well as stable versions (currently `0.1.*`). All packages are versioned according to the [Semantic Versioning Specification (SemVer)](http://semver.org/).
 
 ## Bacon library support {#bacon}
 
