@@ -24,6 +24,7 @@ class Api extends \Bacon\Controller
 	use \Bacon\Traits\Pagination;
 
 	protected $model = '';
+	protected $viewmodel = '';
 	protected $per_page = 100;
 
 	protected $allowed_fields  = [];
@@ -89,7 +90,11 @@ class Api extends \Bacon\Controller
 			$where[$this->belongs_to['key']] = $this->parent_model->id;
 		}
 
-		$model_class = $this->model;
+		if (!empty($this->viewmodel)) {
+			$model_class = $this->viewmodel;
+		} else {
+			$model_class = $this->model;
+		}
 		$model_object = $model_class::where($where);
 
 		if (!empty($this->join)) {
@@ -109,13 +114,17 @@ class Api extends \Bacon\Controller
 
 	public function show ()
 	{
-		$model_class = $this->model;
+		if (!empty($this->viewmodel)) {
+			$model_class = $this->viewmodel;
+		} else {
+			$model_class = $this->model;
+		}
 
 		try {
 			if (!empty($this->readable_fields)) {
 				$data = $model_class::columns($this->readable_fields)->where(['id' => $this->params->id])->first();
 			} else {
-				$data = $model_class->find($this->params->id);
+				$data = $model_class::find($this->params->id);
 			}
 
 			return $this->json($data);
@@ -146,6 +155,12 @@ class Api extends \Bacon\Controller
 			}
 
 			$data->save();
+
+			if (!empty($this->viewmodel)) {
+				$model_class = $this->viewmodel;
+			} else {
+				$model_class = $this->model;
+			}
 
 			$data = $model_class::find($data->id);
 		} catch (\PDOException $e) {
