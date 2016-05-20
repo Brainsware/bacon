@@ -74,7 +74,7 @@ class Html extends \Bacon\Presenter
 
 			$translator = new Translator($locale, new MessageSelector());
 			$translator->addLoader('po', new PoFileLoader());
-			$translator->addResource('po', APP_ROOT . '/locales/' . $locale . '/accounting.po', $locale);
+			$translator->addResource('po', APP_ROOT . '/locales/' . $locale . '/' $this->context->locale_file '.po', $locale);
 
 			$twig->addExtension(new \Symfony\Bridge\Twig\Extension\TranslationExtension($translator));
 		}
