@@ -87,7 +87,12 @@ class AuthCookie
 	{
 		$cipher = Crypto::Encrypt(json_encode($data), $this->key);
 
-		setcookie('auth', $cipher, time() + $this->timeout, '/', '');
+		$cookie_domain = '';
+		if (!empty(\Config\Base::$auth['cookie_domain'])) {
+			$cookie_domain = \Config\Base::$auth['cookie_domain'];
+		}
+
+		setcookie('auth', $cipher, time() + $this->timeout, '/', $cookie_domain);
 	}
 
 	public function destroy ()
