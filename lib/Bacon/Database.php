@@ -22,7 +22,7 @@ namespace Bacon;
 class Database extends \PDO
 {
 	protected $supported_drivers = [ 'sqlite', 'mysql', 'pgsql' ];
-	protected $config; 
+	protected $config;
 	protected $log;
 
 	public function __construct ($log, $config)
@@ -202,7 +202,7 @@ class Database extends \PDO
 		$str .= "dbname={$this->config->name};";
 
 		if (!empty($this->config->port)) {
-			$str .= "port:{$this->config->port};";
+			$str .= "port={$this->config->port};";
 		}
 
 		return $str;
