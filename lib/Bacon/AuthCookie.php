@@ -29,7 +29,6 @@ use \Defuse\Crypto\Crypto;
 class AuthCookie
 {
 	public $timeout = 86400;
-	public $refresh_timeout = 3600;
 
 	private $key;
 	private $log;
@@ -47,22 +46,9 @@ class AuthCookie
 		$this->log = $log;
 		$this->key = base64_decode($config->key);
 
-		/*if (isset($config->timeout)) {
+		if (isset($config->timeout)) {
 			$this->timeout = intval($config->timeout);
 		}
-
-		if (isset($config->refresh_timeout)) {
-			$this->refresh_timeout = intval($config->refresh_timeout);
-		}
-
-		if (!$this->created_at) {
-			$this->start();
-		}
-
-		$this->regenerate();
-		$this->refresh();
-
-		$this->last_used_at = time();*/
 	}
 
 	public function read ()
