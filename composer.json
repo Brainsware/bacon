@@ -6,7 +6,6 @@
 	"homepage":          "http://baconphp.net",
 
 	"authors": [
-		{ "name": "Alexander Pánek", "email": "a.panek@brainsware.org"  },
 		{ "name": "Daniel Khalil",   "email": "d.khalil@brainsware.org" },
 		{ "name": "Igor Galić",      "email": "i.galic@brainsware.org"  }
 	],
@@ -19,9 +18,9 @@
 	"require": {
 		"php":              ">= 5.5.0",
 		"brainsware/sauce": "@dev",
-		"twig/twig":        "1.*",
+		"twig/twig":        "2.*",
 		"twig/extensions":  "*",
-		"defuse/php-encryption": "1.*"
+		"defuse/php-encryption": "2.*"
 	},
 
 	"require-dev": {
