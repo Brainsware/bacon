@@ -21,7 +21,7 @@
 		"brainsware/sauce": "@dev",
 		"twig/twig":        "1.*",
 		"twig/extensions":  "*",
-		"defuse/php-encryption": "*"
+		"defuse/php-encryption": "1.*"
 	},
 
 	"require-dev": {
