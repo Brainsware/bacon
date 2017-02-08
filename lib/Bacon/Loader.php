@@ -1,7 +1,7 @@
 <?php
 
 /**
-   Copyright 2012-2013 Brainsware
+   Copyright Brainsware
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
 namespace Bacon;
 
 /**
- * Template loader for Twig so the layout is automatically extended by the 
+ * Template loader for Twig so the layout is automatically extended by the
  * main template. This makes '{% extend layout %}' unnecessary.
  *
  * @package System
- */ 
+ */
 class Loader extends \Twig_Loader_Filesystem
 {
 	protected $default_template;
@@ -40,15 +40,15 @@ class Loader extends \Twig_Loader_Filesystem
 		$this->base_template = $base_template;
 	}
 
-	public function getSource($name)
+	public function getSourceContext($name)
 	{
 		$source = file_get_contents($this->findTemplate($name));
 
 		if ($name == $this->default_template && $this->base_template) {
-			return '{% extends layout %}' . $source;
+			return new \Twig_Source('{% extends layout %}' . $source, $name);
 		}
 
-		return $source;	
+		return new \Twig_Source($source, $name);
 	}
 }
 
