@@ -1,7 +1,7 @@
 <?php
 
 /**
-   Copyright 2012-2015 Brainsware
+   Copyright Brainsware
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 namespace Bacon;
 
 use \Defuse\Crypto\Crypto;
+use \Defuse\Crypto\Key;
 
 /**
  * Bacon secure auth cookie
@@ -44,7 +45,7 @@ class AuthCookie
 		}
 
 		$this->log = $log;
-		$this->key = base64_decode($config->key);
+		$this->key = $config->key;
 
 		if (isset($config->timeout)) {
 			$this->timeout = intval($config->timeout);
@@ -57,7 +58,8 @@ class AuthCookie
 			return false;
 		}
 		try {
-			$cookie = Crypto::Decrypt($_COOKIE['auth'], $this->key);
+			$key = Key::loadFromAsciiSafeString($this->key);
+			$cookie = Crypto::Decrypt($_COOKIE['auth'], $key);
 
 			$data = json_decode($cookie);
 		} catch (\Exception $e) {
@@ -71,7 +73,8 @@ class AuthCookie
 
 	public function write ($data)
 	{
-		$cipher = Crypto::Encrypt(json_encode($data), $this->key);
+		$key = Key::loadFromAsciiSafeString($this->key);
+		$cipher = Crypto::Encrypt(json_encode($data), $key);
 
 		$cookie_domain = '';
 		if (!empty(\Config\Base::$auth['cookie_domain'])) {
