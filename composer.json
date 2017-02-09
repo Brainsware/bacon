@@ -16,7 +16,7 @@
 	},
 
 	"require": {
-		"php":              ">= 5.5.0",
+		"php":              ">= 7.0",
 		"brainsware/sauce": "@dev",
 		"twig/twig":        "2.*",
 		"twig/extensions":  "*",
