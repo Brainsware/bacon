@@ -62,7 +62,7 @@ class Router
 
 			$endpoint_check = false;
 			if (class_exists($namespace, false)) {
-				$endpoint_check = class_implements($namespace, false);
+				$endpoint_check = class_implements($namespace);
 			}
 
 			if ($endpoint_check != false && in_array('Bacon\Controllers\Endpoint', $endpoint_check)) {
