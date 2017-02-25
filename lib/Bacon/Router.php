@@ -60,7 +60,10 @@ class Router
 
 			$namespace_next = $namespace . '\\' . ucfirst($next);
 
-			$endpoint_check = class_implements($namespace);
+			$endpoint_check = false;
+			if (class_exists($namespace, false)) {
+				$endpoint_check = class_implements($namespace, false);
+			}
 
 			if ($endpoint_check != false && in_array('Bacon\Controllers\Endpoint', $endpoint_check)) {
 				$this->route->push(ucfirst($current));

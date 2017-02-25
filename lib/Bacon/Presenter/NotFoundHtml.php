@@ -28,7 +28,7 @@ class NotFoundHtml extends \Bacon\Presenter\Html
 
 	public function render ($route, $log = null)
 	{
-		$views_path = \Sauce\Path::join(APP_ROOT, 'vendor/brainsware/bacon/Views');
+		$views_path = \Sauce\Path::join(APP_ROOT, 'vendor/brainsware/bacon/Views')->__toString();
 		$not_found_view_path = 'NotFound/index.tpl';
 
 		$loader = new \Bacon\Loader($views_path, $not_found_view_path, false);
