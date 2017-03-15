@@ -4,7 +4,7 @@ These articles try to give a thorough overview on how to use Bacon and explain w
 
 * [Getting Started](/articles/getting-started)
 * [ORM: Models and Collections](/articles/orm)
-* Controllers (TBD)
+* [Controllers](/articles/controllers)
 * Presenters (TBD)
 * [Changelog](/articles/changelog)
 
