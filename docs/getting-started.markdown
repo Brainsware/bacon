@@ -4,7 +4,7 @@ This article gets you started on working with Bacon as quickly as possible and g
 
 ## Installation {#installation}
 
-The bare minimum to get started with Bacon is PHP (>= 5.4.0), composer and git. You can either install those from [php.net](http://php.net/), [getcomposer.org](http://getcomposer.org/) and [git-scm.com](http://git-scm.com/) respectively, or via your distribution.
+The bare minimum to get started with Bacon is PHP (>= 7.0), composer and git. You can either install those from [php.net](http://php.net/), [getcomposer.org](http://getcomposer.org/) and [git-scm.com](http://git-scm.com/) respectively, or via your distribution.
 This tutorial will not go into details of how to do that.
 
 Once you have PHP, composer and git set up, you can create a skeleton project with the following composer command:
@@ -13,23 +13,23 @@ Once you have PHP, composer and git set up, you can create a skeleton project wi
 % composer create-project brainsware/bacon-dist CatBlog
 ```
 
-> **Note:** `brainsware/bacon-dist` is used here as `brainsware/bacon` itself is only published as a library and would require you to set up a project on your own. 
+> **Note:** `brainsware/bacon-dist` is used here as `brainsware/bacon` itself is only published as a library and would require you to set up a project on your own.
 
 This will download all the necessary packages, and create all important directories and sample configuration files for your new cat blog.
 
 You should see the following output:
 ```
-Installing brainsware/bacon-dist (0.1.0)
-  - Installing brainsware/bacon-dist (0.1.0)
+Installing brainsware/bacon-dist (1.0)
+  - Installing brainsware/bacon-dist (1.0)
     Loading from cache
 
 Created project in CatBlog
 Loading composer repositories with package information
 Installing dependencies
-  - Installing brainsware/php-markdown-extra-extended (dev-master 0.1.0)
-    Cloning 0.1.0
+  - Installing brainsware/php-markdown-extra-extended (dev-master 1.0)
+    Cloning 1.0
 
-  - Installing brainsware/sauce (0.1.0)
+  - Installing brainsware/sauce (1.0)
     Loading from cache
 
   - Installing minmb/phpmailer (dev-master df44323)
@@ -38,7 +38,7 @@ Installing dependencies
   - Installing twig/twig (dev-master ba67e2c)
     Cloning ba67e2cf8e2ca6cada1de5a316a724df648c52ac
 
-  - Installing brainsware/bacon (0.1.0)
+  - Installing brainsware/bacon (1.0)
     Loading from cache
 
 Writing lock file

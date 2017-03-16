@@ -1,6 +1,6 @@
 ## Requirements {#requirements}
 
-* PHP (>= 5.4.0)
+* PHP (>= 7.0)
 * Git [git-scm.com](http://git-scm.com/)
 * Composer [getcomposer.org](http://getcomposer.org/)
 
@@ -21,7 +21,7 @@ If you however want to add Bacon as a dependency to your existing project, you n
 ```
 {
 	"require": {
-		"brainsware/bacon": "0.1.*"
+		"brainsware/bacon": "1.*"
 	}
 }
 ```

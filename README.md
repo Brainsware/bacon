@@ -19,17 +19,17 @@ Once you have PHP and composer set up, you can create a skeleton project with th
 This will download all the necessary software, and create all important directories and sample configuration files for your new project:
 
 ```
-Installing brainsware/bacon-dist (0.1.0)
-  - Installing brainsware/bacon-dist (0.1.0)
+Installing brainsware/bacon-dist (1.0)
+  - Installing brainsware/bacon-dist (1.0)
     Loading from cache
 
 Created project in project-name
 Loading composer repositories with package information
 Installing dependencies
-  - Installing brainsware/php-markdown-extra-extended (dev-master 0.1.0)
-    Cloning 0.1.0
+  - Installing brainsware/php-markdown-extra-extended (dev-master 1.0)
+    Cloning 1.0
 
-  - Installing brainsware/sauce (0.1.0)
+  - Installing brainsware/sauce (1.0)
     Loading from cache
 
   - Installing minmb/phpmailer (dev-master df44323)
@@ -38,7 +38,7 @@ Installing dependencies
   - Installing twig/twig (dev-master ba67e2c)
     Cloning ba67e2cf8e2ca6cada1de5a316a724df648c52ac
 
-  - Installing brainsware/bacon (0.1.0)
+  - Installing brainsware/bacon (1.0)
     Loading from cache
 
 Writing lock file
