@@ -86,7 +86,13 @@ class AuthCookie
 
 	public function destroy ()
 	{
-		setcookie('auth', '');
+		$cookie_domain = '';
+		if (!empty(\Config\Base::$auth['cookie_domain'])) {
+			$cookie_domain = \Config\Base::$auth['cookie_domain'];
+		}
+
+		setcookie('auth', 0, time()-3600, '/', $cookie_domain);
+		unset($_COOKIE['auth']);
 	}
 }
 
