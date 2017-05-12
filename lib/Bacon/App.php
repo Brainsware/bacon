@@ -100,6 +100,11 @@ class App
 
 		} catch (Exceptions\RouterException $e) {
 			$this->log->debug($e->getMessage());
+			
+			if (!empty($this->config->spa)) {
+				# Route all not found controllers to root, if single page application
+				return $this->use_root_controller();
+			}
 
 			$this->use_not_found_controller();
 		}
