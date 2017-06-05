@@ -96,11 +96,15 @@ class App
 				return $this->use_root_controller();
 			} else {
 				$this->controller_name = 'Controllers\\' . $this->router->route->join('\\');
+
+				if (!class_exists($this->controller_name)) {
+					throw new Exceptions\RouterException;
+				}
 			}
 
 		} catch (Exceptions\RouterException $e) {
 			$this->log->debug($e->getMessage());
-			
+
 			if (!empty($this->config->spa)) {
 				# Route all not found controllers to root, if single page application
 				return $this->use_root_controller();
