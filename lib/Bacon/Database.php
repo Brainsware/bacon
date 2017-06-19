@@ -38,14 +38,20 @@ class Database extends \PDO
 		$this->log    = $log;
 		$this->config = $this->check_config($this->sanitize_config($config));
 
+		$options = [
+			\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+			\PDO::ATTR_EMULATE_PREPARES   => false,
+			\PDO::ATTR_PERSISTENT         => $this->config->persistent ];
+
+		if (!empty($this->config->encoding)) {
+			$options[\PDO::MYSQL_ATTR_INIT_COMMAND] = "SET CHARACTER SET {$this->config->encoding}";
+		}
+
 		parent::__construct(
 			$this->connection_string(),
 			$this->config->username,
 			$this->config->password,
-			[ \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-			  \PDO::ATTR_EMULATE_PREPARES   => false,
-			  \PDO::ATTR_PERSISTENT         => $this->config->persistent,
-		      \PDO::MYSQL_ATTR_INIT_COMMAND => "SET CHARACTER SET {$this->config->encoding}" ]
+			$options
 		);
 	}
 
