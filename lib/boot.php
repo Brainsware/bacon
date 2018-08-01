@@ -46,12 +46,12 @@ $log = new \Bacon\Log($config->logging);
 Bacon\ORM\DatabaseSingleton::set_logger($log);
 
 if (is_cli()) {
-	$session = new \Sauce\Object();
+	$session = new \Sauce\SObject();
 } else {
 	$session = new \Bacon\Session($config->session, $log);
 }
 
-$authcookie = new \Sauce\Object();
+$authcookie = new \Sauce\SObject();
 
 if (!empty(\Config\Base::$auth)) {
 	$config->auth = \Config\Base::$auth;
@@ -80,7 +80,7 @@ if (is_cli_server()) {
 	if ($question_mark !== false) {
 		$path = substr($path, 0, $question_mark);
 	}
-	
+
 	if (is_file(\Sauce\Path::join(HTDOCS, $path))) {
 		return false;
 	}
@@ -110,7 +110,7 @@ if (!empty($_FILES)) {
 		$keys = array_keys($uploads);
 		$count = count($uploads[$keys[0]]);
 
-		$obj = new \Sauce\Object();
+		$obj = new \Sauce\SObject();
 
 		if (!is_array($keys[0])) {
 			foreach ($keys as $key) {

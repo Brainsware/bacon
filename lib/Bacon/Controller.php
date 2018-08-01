@@ -117,7 +117,7 @@ abstract class Controller
 
 			return A([
 				'data'    => $result,
-				'context' => new \Sauce\Object($this->context)
+				'context' => new \Sauce\SObject($this->context)
 			]);
 
 		} catch (\Exception $e) {
@@ -186,7 +186,7 @@ abstract class Controller
 
 	protected function add_filter($name, $function)
 	{
-		if (!isset($this->context->filters) || !is_a($this->context->filters, '\Sauce\Object')) {
+		if (!isset($this->context->filters) || !is_a($this->context->filters, '\Sauce\SObject')) {
 			$this->context->filters = A($this->context->filters || []);
 		}
 

@@ -34,7 +34,7 @@ class Request extends Immutable
 
 	public function __construct ($session, $config, $log)
 	{
-		if (!($config instanceof \Sauce\Object)) {
+		if (!($config instanceof \Sauce\SObject)) {
 			$config = Ar($config);
 		}
 

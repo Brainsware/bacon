@@ -28,7 +28,7 @@ class Router
 		$this->params      = $params;
 
 		if (!$this->params) {
-			$this->params = new \Sauce\Object();
+			$this->params = new \Sauce\SObject();
 		}
 	}
 

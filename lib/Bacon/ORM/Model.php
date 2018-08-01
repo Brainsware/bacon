@@ -19,7 +19,7 @@
 
 namespace Bacon\ORM;
 
-abstract class Model extends \Sauce\Object
+abstract class Model extends \Sauce\SObject
 {
 	use BeforeAndAfter;
 
@@ -64,7 +64,7 @@ abstract class Model extends \Sauce\Object
 
 
 	/* Constructor for the Model. Gets an instance of \Bacon\Database,
-	 * initializes the error store and calls \Sauce\Object's constructor.
+	 * initializes the error store and calls \Sauce\SObject's constructor.
 	 *
 	 * $args is an array of values to set in a newly created model's column
 	 * values. $stored is a boolean indicating whether this object is already

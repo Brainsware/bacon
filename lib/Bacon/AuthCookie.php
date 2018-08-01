@@ -36,7 +36,7 @@ class AuthCookie
 
 	public function __construct ($config, $log)
 	{
-		if (!is_a($config, '\Sauce\Object', true)) {
+		if (!is_a($config, '\Sauce\SObject', true)) {
 			$config = Ar($config);
 		}
 

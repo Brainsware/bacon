@@ -38,7 +38,7 @@ class Messages
 		// Mimic session store via stdClass object if no
 		// session handler was given
 		if ($this->session === null) {
-			$this->session = new \Sauce\Object();
+			$this->session = new \Sauce\SObject();
 		}
 
 		if (empty($levels)) {
@@ -48,12 +48,12 @@ class Messages
 		// Check whether messages store is available already -
 		// if not create one
 		if (!isset($this->session->messages)) {
-			$this->session->messages = new \Sauce\Object();
+			$this->session->messages = new \Sauce\SObject();
 		}
 
 		foreach ($this->levels as $l) {
 			if (!isset($this->session->messages->$l)) {
-				$this->session->messages->$l = new \Sauce\Object();
+				$this->session->messages->$l = new \Sauce\SObject();
 			}
 		}
 
@@ -61,13 +61,13 @@ class Messages
 		if (isset($this->session->messages->ttl)) {
 			// TTL < 1 => flush messages
 			if ($this->session->messages->ttl < 1) {
-				$this->session->messages = new \Sauce\Object();
+				$this->session->messages = new \Sauce\SObject();
 				$this->session->messages->ttl = $ttl;
 			} else {
 				$this->session->messages->ttl--;
 			}
 		} else {
-			$this->session->messages = new \Sauce\Object();
+			$this->session->messages = new \Sauce\SObject();
 			$this->session->messages->ttl = $ttl;
 		}
 
