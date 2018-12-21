@@ -133,7 +133,7 @@ class Database extends \PDO
 
 	protected function fetch_row ($statement, $last_id)
 	{
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		$result = $statement->fetch(\PDO::FETCH_ASSOC);
 
 		// TODO: Should an exception be thrown?
 		if (empty($result)) {

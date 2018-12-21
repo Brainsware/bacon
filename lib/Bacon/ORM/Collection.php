@@ -261,7 +261,7 @@ class Collection extends \ArrayObject
 		$values = [];
 		$statement = 'SELECT ';
 
-		if (count($this->select_list) > 0) {
+		if (!empty($this->select_list)) {
 			if (is_array($this->primary_key)) {
 				foreach ($this->primary_key as $key) {
 					if (!in_array($key, $this->select_list)) {
