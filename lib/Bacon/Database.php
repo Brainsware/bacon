@@ -55,7 +55,7 @@ class Database extends \PDO
 		);
 	}
 
-	public function query ($query, $values = [], $fetch_mode = 'multi', $last_id = null)
+	public function query ($query, $values = [], $fetch_mode = 'multi', $last_id = null, $fetch = true)
 	{
 		/* NOTE: PDO has multiple error handling strategies.
 		 *
@@ -86,7 +86,9 @@ class Database extends \PDO
 				throw new \PDOException(V($statement->errorInfo())->join());
 			}
 
-			$result = $this->fetch($fetch_mode, $statement, $last_id);
+			if ($fetch) {
+        $result = $this->fetch($fetch_mode, $statement, $last_id);
+      }
 
 			unset($statement);
 
