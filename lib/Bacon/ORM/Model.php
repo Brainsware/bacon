@@ -291,7 +291,7 @@ abstract class Model extends \Sauce\SObject
 
 		$values = array_merge($values, $pk->values->getArrayCopy());
 
-		$result = $this->db->query($statement, $values, null, false);
+		$result = $this->db->query($statement, $values, 'multi', null, false);
 
 		$this->stored = true;
 		$this->updated = false;
@@ -315,7 +315,7 @@ abstract class Model extends \Sauce\SObject
 
 		$statement .= ' WHERE ' . $pk->statement;
 
-		$result = $this->db->query($statement, $pk->values->getArrayCopy(), null, false);
+		$result = $this->db->query($statement, $pk->values->getArrayCopy(), 'multi', null, false);
 
 		$this->stored = true;
 		$this->updated = false;
