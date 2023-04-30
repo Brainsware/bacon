@@ -141,28 +141,40 @@ class Session implements \ArrayAccess
 		return null;
 	}
 
-	public function offsetGet ($key) { return $this->__get($key); }
+	public function offsetGet ($key): mixed
+	{
+		return $this->__get($key);
+	}
 
 	public function __set ($key, $value)
 	{
 		$_SESSION[$key] = $value;
 	}
 
-	public function offsetSet ($key, $value) { $this->__set($key, $value); }
+	public function offsetSet ($key, $value): void
+	{
+		$this->__set($key, $value);
+	}
 
 	public function __isset ($key)
 	{
 		return isset($_SESSION[$key]);
 	}
 
-	public function offsetExists ($key) { return $this->__isset($key); }
+	public function offsetExists ($key): bool
+	{
+		return $this->__isset($key);
+	}
 
 	public function __unset ($key)
 	{
 		unset($_SESSION[$key]);
 	}
 
-	public function offsetUnset ($key) { $this->__unset($key); }
+	public function offsetUnset ($key): void
+	{
+		$this->__unset($key);
+	}
 }
 
 ?>

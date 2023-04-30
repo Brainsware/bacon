@@ -44,7 +44,7 @@ class Collection extends \ArrayObject
 		$this->db          = \Bacon\ORM\DatabaseSingleton::get_instance();
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		if (!$this->loaded) {
 			$this->load();
@@ -57,7 +57,7 @@ class Collection extends \ArrayObject
 		return false;
 	}
 
-	public function getIterator()
+	public function getIterator(): \Iterator
 	{
 		if (!$this->loaded) {
 			$this->load();
@@ -113,7 +113,7 @@ class Collection extends \ArrayObject
 		return $this->offsetGet(0);
 	}
 
-	public function count()
+	public function count(): int
 	{
 		if (!$this->loaded) {
 			try {
@@ -121,7 +121,7 @@ class Collection extends \ArrayObject
 				$values = $wc->values;
 				$statement = 'SELECT COUNT(*) AS count FROM ' . $this->table_name . $wc->statement;
 
-				$result = $this->db->query($statement, $values->getArrayCopy());
+				$result = $this->db->dbquery($statement, $values->getArrayCopy());
 
 				return $result[0]['count'];
 
@@ -306,7 +306,7 @@ class Collection extends \ArrayObject
 		}
 
 		try {
-			$items = $this->db->query($statement, $values);
+			$items = $this->db->dbquery($statement, $values);
 
 		} catch (\PDOException $e) {
 			$this->loaded = true;

@@ -55,7 +55,7 @@ class Database extends \PDO
 		);
 	}
 
-	public function query ($query, $values = [], $fetch_mode = 'multi', $last_id = null, $fetch = true)
+	public function dbquery ($query, $values = [], $fetch_mode = 'multi', $last_id = null, $fetch = true)
 	{
 		/* NOTE: PDO has multiple error handling strategies.
 		 *

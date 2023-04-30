@@ -21,12 +21,15 @@ namespace Bacon;
 
 class Router
 {
-	public function __construct ($uri, $http_method, $params)
-	{
-		$this->uri         = $uri;
-		$this->http_method = $http_method;
-		$this->params      = $params;
+	public $route;
+	public $action;
+	public $type;
 
+	public function __construct (
+		public $uri,
+		public $http_method,
+		public $params)
+	{
 		if (!$this->params) {
 			$this->params = new \Sauce\SObject();
 		}

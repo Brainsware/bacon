@@ -47,7 +47,10 @@ class Log
 
 	protected $file;
 	protected $driver;
-	
+
+	public $level;
+	public $filename;
+
 	public function __construct ($level = self::INFO, $driver = self::FILESYSTEM, $output_file = null)
 	{
 		$this->levels = A($this->levels);

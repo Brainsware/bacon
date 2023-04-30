@@ -30,7 +30,7 @@ abstract class Model extends \Sauce\SObject
 	protected $db;
 	protected static $table_name;
 	protected static $primary_key = 'id';
-	
+
 	protected static $timestamps = true;
 	protected static $created_at = 'created_at';
 	protected static $updated_at = 'updated_at';
@@ -157,7 +157,7 @@ abstract class Model extends \Sauce\SObject
 		}
 
 		$this->before_save();
-		
+
 		$created_at = static::$created_at;
 		$updated_at = static::$updated_at;
 
@@ -210,7 +210,7 @@ abstract class Model extends \Sauce\SObject
 	}
 
 	/* Stores this object in the database with all key-value pairs in
-	 * storage. 
+	 * storage.
 	 *
 	 * Called by #save
 	 *
@@ -238,7 +238,7 @@ abstract class Model extends \Sauce\SObject
 
 		$statement .= implode(', ', $value_set) . ')';
 
-		$result = $this->db->query($statement, $values, 'last_id');
+		$result = $this->db->dbquery($statement, $values, 'last_id');
 
 		/* NOTE: PDO's lastInsertId does not work with PostgreSQL unless we supply
 		 *       the sequence name. This is a hack to circumvent this.
@@ -291,7 +291,7 @@ abstract class Model extends \Sauce\SObject
 
 		$values = array_merge($values, $pk->values->getArrayCopy());
 
-		$result = $this->db->query($statement, $values, 'multi', null, false);
+		$result = $this->db->dbquery($statement, $values, 'multi', null, false);
 
 		$this->stored = true;
 		$this->updated = false;
@@ -315,7 +315,7 @@ abstract class Model extends \Sauce\SObject
 
 		$statement .= ' WHERE ' . $pk->statement;
 
-		$result = $this->db->query($statement, $pk->values->getArrayCopy(), 'multi', null, false);
+		$result = $this->db->dbquery($statement, $pk->values->getArrayCopy(), 'multi', null, false);
 
 		$this->stored = true;
 		$this->updated = false;
@@ -351,7 +351,7 @@ abstract class Model extends \Sauce\SObject
 			$values[] = $this->$sort;
 			$values[] = $new;
 
-			$this->db->query(
+			$this->db->dbquery(
 				'UPDATE ' . static::$table_name . '
 				SET ' . $sort . ' = ' . $sort . ' - 1 WHERE ' . $fk_query . ' AND ' . $sort . ' > ? AND ' . static::$sortable . ' <= ?',
 				$values
@@ -360,7 +360,7 @@ abstract class Model extends \Sauce\SObject
 			$values[] = $new;
 			$values[] = $this->$sort;
 
-			$this->db->query(
+			$this->db->dbquery(
 				'UPDATE ' . static::$table_name . '
 				SET ' . $sort . ' = ' . $sort . ' + 1 WHERE ' . $fk_query . ' AND ' . $sort . ' >= ? AND ' . $sort . ' < ?',
 				$values
@@ -372,7 +372,7 @@ abstract class Model extends \Sauce\SObject
 	}
 
 	/* Overriding Object#__set so we can determine whether something was
-	 * updated. 
+	 * updated.
 	 */
 	public function __set ($name, $value)
 	{
